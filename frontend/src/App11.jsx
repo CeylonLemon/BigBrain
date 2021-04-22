@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
-// import { AppBar, Toolbar } from '@material-ui/core';
 import './App.css';
 import { EditGames } from './pages/editGames';
-// import { EditQuestion } from './object/editGame';
 import { Home } from './pages/home'
 import { WaitForPin } from './pages/waitForPin';
 import { StartGame } from './pages/startGame';
@@ -14,13 +12,13 @@ import { WaitingRoom } from './playerPages/waitingRoom';
 import { GameEnd } from './playerPages/gameEnd.jsx';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import GameTable from './object/GameTable';
+import ButtonAppBar from './object/NavBar';
 import {
   BrowserRouter as Router,
   Route,
   Redirect
 } from 'react-router-dom';
-import GameTable from './object/GameTable';
-import ButtonAppBar from './object/NavBar';
 
 function App11 () {
   // const [mode, changeMode] = React.useState('login');
@@ -38,6 +36,7 @@ function App11 () {
     password,
     editPassword
   }), [token, name, email, password]);
+
   function Navigate () {
     return (
         <UserContext.Provider value={providerValue}>

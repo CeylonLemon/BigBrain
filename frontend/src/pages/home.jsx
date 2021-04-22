@@ -8,9 +8,9 @@ export function Home () {
   return <Container style={{ marginTop: '100px' }}>
         <h2 id='greeting'>Welcome! {name}</h2>
         <div>
-               <div>
-                    <GameTable/>
-                </div>
+            <div>
+                <GameTable/>
+            </div>
         </div>
     </Container>
 }

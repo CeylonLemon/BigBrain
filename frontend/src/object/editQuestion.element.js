@@ -20,11 +20,9 @@ export const QNavigator = styled(Container)`
   height: 30px;
   width: 280px;
   margin-top: 10px;
-  // width: 320px;
   background-color: lightblue;
   display: flex;
   flex-direction: row;
-  // border: grey solid;
   border-radius: 20px;
   border-bottom: 0;
 `

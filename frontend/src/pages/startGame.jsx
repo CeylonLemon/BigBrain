@@ -14,10 +14,6 @@ export function StartGame () {
   const qs = game.questions;
   const [stage, setStage] = useState(0);
   const [timeLeft, setTimeLeft] = useState(qs[stage].limit)
-  console.log(stage)
-  console.log(qs)
-  console.log(qs[stage])
-  console.log(qs[stage].limit)
   const [finished, setFinished] = useState(false)
 
   useEffect(() => {
@@ -27,16 +23,9 @@ export function StartGame () {
   function advanceGame () {
     // if not reach the last question, jump to next question
     if (stage < game.questions.length - 1) {
-      console.log(game.questions.length)
-      console.log(stage)
-      console.log(stage < game.questions.length - 1)
       sendRequest('admin/quiz/' + game.id + '/advance', false, 'POST', token)
         .then(async data => {
-          console.log(data)
-          console.log(data.stage)
-          console.log(qs)
           setStage(data.stage)
-
           setFinished(false)
         });
       // if reach the end, stop this game

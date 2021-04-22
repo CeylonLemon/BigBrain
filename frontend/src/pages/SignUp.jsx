@@ -64,7 +64,6 @@ export default function SignUp () {
       .then(data => {
         setToken(data.token);
         editPassword(password);
-        console.log(data.token)
         history.push('/home');
       })
       .catch(e => { alert(e) })

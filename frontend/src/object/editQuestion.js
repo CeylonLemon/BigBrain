@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { QuestionEditor, Buttons, Options, Option } from './editQuestion.element'
 import { AddButton, DeleteButton, Clearicon, UploadButton } from './Button';
 import { fileToDataUrl } from '../helper/helper';
-import { BlankPic } from '../helper/UserContext';
+import { Container } from '@material-ui/core';
 
 export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
   const [title, setTitle] = React.useState(question.title);
@@ -11,7 +11,7 @@ export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
   const [points, setPoints] = React.useState(question.points);
   const [options, setOptions] = React.useState(question.options);
   const [answers, setAnswers] = React.useState(question.answers);
-  const [picture, setPicture] = React.useState(BlankPic);
+  const [picture, setPicture] = React.useState(question.thumbnail);
 
   // update question when editing
   React.useEffect(() => {
@@ -20,6 +20,7 @@ export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
     question.points = points;
     question.options = options;
     question.answers = answers;
+    question.thumbnail = picture;
     const qs = [...questions];
     qs[idx] = question;
     setQs(qs);
@@ -58,7 +59,7 @@ export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
 
   function uploadPicture (e) {
     const file = e.target.files[0];
-    fileToDataUrl(file).then(data => { console.log(data); setPicture(data) })
+    fileToDataUrl(file).then(data => { setPicture(data) })
   }
 
   const stylesheet = {
@@ -80,10 +81,10 @@ export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
     }/>
       <UploadButton clickFunc={uploadPicture}/>
     </div>
-      <div>
+      <Container>
 
-        <img src={picture}/>
-      </div>
+        <img style={{ width: '200px', height: '200px' }} src={picture}/>
+      </Container>
 
     <Options style={stylesheet}>
       {options.map((o, i) =>

@@ -1,3 +1,4 @@
+import { BlankPic } from '../helper/UserContext';
 export class Game {
   constructor (props) {
     this.name = props.name;
@@ -25,13 +26,6 @@ export class Game {
     })
     return score
   }
-  // function wrapGame() {
-  //   return{
-  //     "questions": this.questions,
-  //     "name": this.title,
-  //     "thumbnail": this.thumbnail,
-  //   }
-  // }
 }
 export class Question {
   constructor (props) {
@@ -63,7 +57,7 @@ export function initGame () {
     active: '',
     createdAt: '',
     id: 'newGame',
-    thumbnail: '',
+    thumbnail: BlankPic,
     oldSessions: '',
     questions: [initQuestion()]
   })
@@ -76,6 +70,7 @@ export function initQuestion () {
     url: '',
     options: ['A', 'B'],
     answers: ['A'],
-    points: 5
+    points: 5,
+    thumbnail: BlankPic
   })
 }

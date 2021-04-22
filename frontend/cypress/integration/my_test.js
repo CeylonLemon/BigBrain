@@ -1,28 +1,28 @@
 // 1. Registers successfully
-// context('Signup flow - happy path', () => {
-//   beforeEach(() => {
-//     cy.visit('localhost:3000/SignUp');
-//   });
-//
-//   it('Successfully signs up', () => {
-//     const name = 'Nicky';
-//     const email = 'Jacky@example.com';
-//     const password = 'ch6898929'
-//
-//     cy.get('input[name=firstName]')
-//       .focus()
-//       .type(name);
-//     cy.get('input[name=email]')
-//       .focus()
-//       .type(email);
-//     cy.get('input[name=password]')
-//       .focus()
-//       .type(password);
-//     cy.get('button[type=submit]')
-//       .click();
-//     cy.get('h2[id=greeting]')
-//   })
-// })
+context('Signup flow - happy path', () => {
+  beforeEach(() => {
+    cy.visit('localhost:3000/SignUp');
+  });
+
+  it('Successfully signs up', () => {
+    const name = 'Nicky';
+    const email = 'Peter@example.com';
+    const password = 'ch6898929'
+
+    cy.get('input[name=firstName]')
+      .focus()
+      .type(name);
+    cy.get('input[name=email]')
+      .focus()
+      .type(email);
+    cy.get('input[name=password]')
+      .focus()
+      .type(password);
+    cy.get('button[type=submit]')
+      .click();
+    cy.get('h2[id=greeting]')
+  })
+})
 
 // 2. Creates a new game successfully
 context('Create a Game - happy path', () => {
@@ -88,7 +88,7 @@ context('Start then stop Game - happy path', () => {
       .click();
     cy.get('button[type=advanceGame]')
       .click();
-    cy.get('h2[id=endTitle]')
+    cy.get('h2[id=greeting]')
   })
 })
 

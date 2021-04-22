@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { sleep } from '../helper/helper'
 
 export function CountDownTimer ({ stage, tl, setFinished }) {
-  // console.log(parseInt(tl))
   const [timeLeft, setTimeLeft] = React.useState(parseInt(tl));
   async function countDown () {
     if (timeLeft > 1) { setTimeLeft(timeLeft - 1); } else {
@@ -14,8 +13,6 @@ export function CountDownTimer ({ stage, tl, setFinished }) {
   }
 
   useEffect(() => {
-    console.log('st')
-    console.log(tl)
     setTimeLeft(tl);
   }, [stage])
 

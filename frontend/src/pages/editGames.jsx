@@ -1,21 +1,19 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { EditQuestion } from '../object/editQuestion';
 import { Link, Redirect, Route, Switch, useLocation, useHistory } from 'react-router-dom';
 import { initQuestion } from '../object/game';
 import { sendRequest } from '../helper/api';
-import { BlankPic, UserContext } from '../helper/UserContext';
+import { UserContext } from '../helper/UserContext';
 import { SaveButton } from '../object/Button';
 import { Container } from '@material-ui/core';
-// import { Contain } from '../object/editQuestion.element';
+import { fileToDataUrl } from '../helper/helper';
 import {
   Contain,
   QNavigator,
   Wrapper,
   Buttons,
   EditGamesContainer
-  // QuestionEditor
 } from '../object/editQuestion.element';
-import { fileToDataUrl } from '../helper/helper';
 
 export function EditGames () {
   const { token } = useContext(UserContext);
@@ -24,19 +22,13 @@ export function EditGames () {
   const [Game, setGame] = React.useState(game);
   const [questions, setQuestions] = React.useState(game.questions);
   const [name, setName] = React.useState(game.name);
-  const [picture, setPicture] = React.useState(BlankPic);
-  // const [loading, setLoading] = React.useState(true);
-  // const [addQ, setAddQ] = React.useState(false)
+  const [picture, setPicture] = React.useState(game.thumbnail);
   const ids = [];
-  console.log(questions)
-
-  useEffect(() => {
-    if (game.thumbnail) setPicture(game.thumbnail);
-  }, [game])
 
   function submitChange () {
     game.name = name;
     game.questions = questions;
+    game.thumbnail = picture;
     // upload game
     const Data = {
       questions: game.questions,
@@ -92,7 +84,8 @@ export function EditGames () {
 
   function uploadFile (e) {
     const file = e.target.files[0];
-    fileToDataUrl(file).then(data => { console.log(data) })
+    fileToDataUrl(file)
+      .then(data => { setPicture(data) })
   }
 
   function addQuestion () {
@@ -112,11 +105,13 @@ export function EditGames () {
           }} value={name}/>
         </div>
 
-        <div>Add picture <input type="file" onChange={(e) => { uploadFile(e); }}/></div>
+        <div>Add picture <input type="file"
+                                onChange={(e) => { uploadFile(e); }}/>
+        </div>
       </Container>
 
       <Container>
-        <img src={picture}/>
+        <img src={picture} style={{ width: '300px', height: '300px' }}/>
       </Container>
       <Buttons>
         <SaveButton clickFunc={submitChange} text={'Confirm'} type={'confirmEdit'}/>
@@ -124,37 +119,36 @@ export function EditGames () {
     </Contain>
 
     <Wrapper>
-    <QNavigator>
-      {questions.map((q, i) =>
-          <Link to={{
-            pathname: '/editGames/' + game.id + '/question' + i,
-            state: { game: game }
-          }}
-                style={{ marginRight: '3%' }}
-                key={i}>{i}</Link>)}
-    </QNavigator>
-  <div>
+      <QNavigator>
+        {questions.map((q, i) =>
+            <Link to={{
+              pathname: '/editGames/' + game.id + '/question' + i,
+              state: { game: game }
+            }}
+                  style={{ marginRight: '3%' }}
+                  key={i}>{i}</Link>)}
+      </QNavigator>
+      <div>
 
-    {
-      <Switch>{
-        questions.map((q, i) => <Route path={
-          '/editGames/' + game.id + '/question' + i} key={i}>
-          <EditQuestion questions={game.questions} question={q}
-                        setQs={setQuestions} idx={i} addQ={addQuestion}/></Route>
-        )
-      }
-      </Switch>
-    }
+        {
+          <Switch>{
+            questions.map((q, i) => <Route path={
+              '/editGames/' + game.id + '/question' + i} key={i}>
+              <EditQuestion questions={game.questions} question={q}
+                            setQs={setQuestions} idx={i} addQ={addQuestion}/></Route>
+            )
+          }
+          </Switch>
+        }
 
-    <Redirect to={{
-      pathname: '/editGames/' + game.id + '/question0',
-      state: {
-        game: game
-      }
-    }}/>
-  </div>
+        <Redirect to={{
+          pathname: '/editGames/' + game.id + '/question0',
+          state: {
+            game: game
+          }
+        }}/>
+      </div>
 
     </Wrapper>
   </EditGamesContainer>
 }
-// e.target.files[0]

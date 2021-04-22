@@ -92,12 +92,6 @@ export default function GameTable () {
       .then(() => {
         const gs = [...games];
         gs.splice(idx, 1)
-        // for (let i = 0; i < gs.length; i++) {
-        //   if (gs[i].id === id) {
-        //     gs.splice(i, 1);
-        //     break;
-        //   }
-        // }
         setGames(gs);
       })
   }
@@ -120,7 +114,6 @@ export default function GameTable () {
         return Promise.all(ps)
       }).then(() => {
         setGames(gs);
-      // setGameLoaded(true);
       })
   }
 

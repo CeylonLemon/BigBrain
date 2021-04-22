@@ -214,6 +214,7 @@ export const advanceQuiz = quizId => quizLock((resolve, reject) => {
     reject(new InputError('Cannot advance a quiz that is not active'));
   } else {
     const totalQuestions = session.questions.length;
+    console.log('advance!',session)
     session.position += 1;
     session.answerAvailable = false;
     session.isoTimeLastQuestionStarted = new Date().toISOString();

@@ -1,49 +1,112 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { initQuestion } from './game';
-export function EditQuestion ({ questions, question, setGame, setQs }) {
-  // const { questions } = this.props.location.state;
-  // const[games, editGames] = useState([''])
-  // const question = props.question;
-  // const question = props.question;
-  // const [quest, setQuestion] = React.useState(props.question);
+import { QuestionEditor, Buttons, Options, Option } from './editQuestion.element'
+import { AddButton, DeleteButton, Clearicon, UploadButton } from './Button';
+import { fileToDataUrl } from '../helper/helper';
+import { BlankPic } from '../helper/UserContext';
+
+export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
   const [title, setTitle] = React.useState(question.title);
   const [limit, setLimit] = React.useState(question.limit);
   const [points, setPoints] = React.useState(question.points);
   const [options, setOptions] = React.useState(question.options);
-  function modifyQuestion () {
+  const [answers, setAnswers] = React.useState(question.answers);
+  const [picture, setPicture] = React.useState(BlankPic);
+
+  // update question when editing
+  React.useEffect(() => {
     question.title = title;
     question.limit = limit;
     question.points = points;
     question.options = options;
-    setQs(question);
+    question.answers = answers;
+    const qs = [...questions];
+    qs[idx] = question;
+    setQs(qs);
+  }, [title, limit, points, options, answers])
+
+  function modifyOption (idx, value) {
+    const ops = [...options];
+    ops[idx] = value;
+    setOptions(ops);
   }
 
-  return <><h2>editGame</h2>
-    <div>Question<input type='text' value={title} placeholder='describe question...' onChange={(e) => {
+  function deleteQuestion (idx, value) {
+    const qs = [...questions];
+    qs.splice(idx, 1);
+    setQs(qs);
+  }
+
+  function addOption () {
+    const ops = [...options];
+    ops.push('');
+    setOptions(ops);
+  }
+  function deleteOption (idx) {
+    const ops = [...options];
+    ops.splice(idx, 1);
+    setOptions(ops);
+  }
+
+  function modifyAnswers (idx) {
+    const ans = [...answers];
+    (ans.includes(options[idx]))
+      ? ans.splice(idx, 1)
+      : ans.push(options[idx]);
+    setAnswers(ans);
+  }
+
+  function uploadPicture (e) {
+    const file = e.target.files[0];
+    fileToDataUrl(file).then(data => { console.log(data); setPicture(data) })
+  }
+
+  const stylesheet = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around'
+  }
+
+  return <QuestionEditor>
+
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-around'
+
+    }}>Question<input type='text' value={title} placeholder='describe question...' onChange={(e) => {
       setTitle(e.target.value);
     }
-    }/></div>
-    <div>Add image/vedio</div>
-    <div>
-      <input type='checkbox' value='1'/>
-      <label> single choice</label>
-      <input type='checkbox' value='1'/>
-      <label> multiple choice</label>
+    }/>
+      <UploadButton clickFunc={uploadPicture}/>
+    </div>
+      <div>
+
+        <img src={picture}/>
+      </div>
+
+    <Options style={stylesheet}>
+      {options.map((o, i) =>
+        <Option key={i}>
+          option{i}<input type='text' value={o} onChange={
+            (e) => { modifyOption(i, e.target.value) }}/>
+          {(answers.includes(o))
+            ? <input type='checkbox' id={i} onClick={() => {
+              modifyAnswers(i);
+            }} defaultChecked={true}/>
+            : <input type='checkbox' id={i} onClick={() => {
+              modifyAnswers(i);
+            }}/>}
+          <Clearicon clickFunc={deleteOption} idx={i} ifDisplay={(i > 1)}/>
+
+        </Option>
+      )}
+    </Options>
+    <div style={{ width: '50%', fontSize: '1px' }}>
+
     </div>
     <div>
-      optionA<input type='text' value={options[0]} placeholder='describe option...' onChange={(e) => {
-      setOptions([e.target.value, options[1]]);
-    }}/>
-    </div>
-    <div>
-      optionB<input type='text' value={options[1]} placeholder='describe option...' onChange={(e) => {
-      setOptions([options[0], e.target.value]);
-    }}/>
-    </div>
-    <button>Add option(up to 6)</button>
-    <div>
-      Time Limit<input value={limit} type='number' onChange={(e) => {
+      Time Limit<input value={limit} type='number' name='setLimit' onChange={(e) => {
       setLimit(e.target.value);
     }}/>
     </div>
@@ -52,15 +115,17 @@ export function EditQuestion ({ questions, question, setGame, setQs }) {
       setPoints(e.target.value);
     }}/>
     </div>
-    <button onClick={() => { modifyQuestion() }}>Save</button>
-
-    </>
+    <Buttons>
+    <DeleteButton clickFunc={deleteQuestion}/>
+      <AddButton clickFunc={addQ} style={{ width: '100px', height: '35px', marginTop: '8px', fontSize: '5px', marginRight: '5px' }} text={'Question'} />
+      <AddButton clickFunc={addOption} text={'Option'} style={{ width: '100px', height: '35px', marginTop: '8px', fontSize: '5px' }} />
+    </Buttons>
+    </QuestionEditor>
 }
 EditQuestion.propTypes = {
+  addQ: PropTypes.func,
   setQs: PropTypes.func,
   questions: PropTypes.array,
-  game: PropTypes.object,
   question: PropTypes.object,
-  setGame: PropTypes.func,
   idx: PropTypes.number
 };

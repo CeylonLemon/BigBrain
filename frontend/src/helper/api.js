@@ -11,7 +11,9 @@ const getJSON = (path, options) =>
       }
       return res.json();
     }
-    )
+    ).catch((e) => {
+      console.log(e);
+    })
 
 /**
  * This is a sample class API which you may base your code on.
@@ -35,6 +37,7 @@ export default class API {
       },
       method: method
     }
+    console.log('i sent this request', otherPram, path)
     if (auth) { otherPram.headers.Authorization = 'Bearer ' + auth }
     if (Data) { otherPram.body = JSON.stringify(Data) }
     return getJSON(`${this.url}/${path}`, otherPram);

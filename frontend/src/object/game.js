@@ -8,8 +8,23 @@ export class Game {
     this.thumbnail = props.thumbnail;
     this.oldSessions = props.oldSessions;
     this.questions = props.questions;
+    this.time = this.calcTime();
+    this.score = this.calcScore();
   }
 
+  calcTime () {
+    let time = 0;
+    this.questions.forEach((q, i) => { time = parseInt(time) + parseInt(q.limit) });
+    return time;
+  }
+
+  calcScore () {
+    let score = 0;
+    this.questions.forEach((q, i) => {
+      score = parseInt(score) + parseInt(q.points)
+    })
+    return score
+  }
   // function wrapGame() {
   //   return{
   //     "questions": this.questions,
@@ -18,7 +33,6 @@ export class Game {
   //   }
   // }
 }
-
 export class Question {
   constructor (props) {
     this.gameid = props.gameid;
@@ -56,12 +70,12 @@ export function initGame () {
 }
 export function initQuestion () {
   return new Question({
-    qid: '',
+    qid: 0,
     title: '',
-    limit: '',
+    limit: 5,
     url: '',
     options: ['A', 'B'],
-    answers: [],
-    points: ''
+    answers: ['A'],
+    points: 5
   })
 }

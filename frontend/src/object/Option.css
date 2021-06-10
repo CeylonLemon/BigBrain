@@ -1,0 +1,6 @@
+.option:hover{
+    background-color: #61dafb;
+    transform: scale(1.05) ;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.2s;
+}

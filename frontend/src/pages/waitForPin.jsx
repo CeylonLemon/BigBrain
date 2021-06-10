@@ -7,6 +7,7 @@ export function WaitForPin () {
   const { token } = useContext(UserContext);
   const { id } = useParams();
   const game = useLocation().state.game;
+  console.log(game)
   const history = useHistory();
 
   React.useEffect(() => {

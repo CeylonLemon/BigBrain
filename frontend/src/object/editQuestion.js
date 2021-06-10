@@ -5,7 +5,7 @@ import { AddButton, DeleteButton, Clearicon, UploadButton } from './Button';
 import { fileToDataUrl } from '../helper/helper';
 import { Container } from '@material-ui/core';
 
-export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
+export function EditQuestion ({ questions, question, setQs, idx, addQ, deleteQ }) {
   const [title, setTitle] = React.useState(question.title);
   const [limit, setLimit] = React.useState(question.limit);
   const [points, setPoints] = React.useState(question.points);
@@ -15,12 +15,15 @@ export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
 
   // update question when editing
   React.useEffect(() => {
-    question.title = title;
-    question.limit = limit;
-    question.points = points;
-    question.options = options;
-    question.answers = answers;
-    question.thumbnail = picture;
+    Object.assign(question, {
+      title: title,
+      limit: limit,
+      points: points,
+      options: options,
+      answers: answers,
+      thumbnail: picture
+    })
+
     const qs = [...questions];
     qs[idx] = question;
     setQs(qs);
@@ -30,12 +33,6 @@ export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
     const ops = [...options];
     ops[idx] = value;
     setOptions(ops);
-  }
-
-  function deleteQuestion (idx, value) {
-    const qs = [...questions];
-    qs.splice(idx, 1);
-    setQs(qs);
   }
 
   function addOption () {
@@ -117,7 +114,7 @@ export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
     }}/>
     </div>
     <Buttons>
-    <DeleteButton clickFunc={deleteQuestion}/>
+    <DeleteButton clickFunc={deleteQ}/>
       <AddButton clickFunc={addQ} style={{ width: '100px', height: '35px', marginTop: '8px', fontSize: '5px', marginRight: '5px' }} text={'Question'} />
       <AddButton clickFunc={addOption} text={'Option'} style={{ width: '100px', height: '35px', marginTop: '8px', fontSize: '5px' }} />
     </Buttons>
@@ -125,6 +122,7 @@ export function EditQuestion ({ questions, question, setQs, idx, addQ }) {
 }
 EditQuestion.propTypes = {
   addQ: PropTypes.func,
+  deleteQ: PropTypes.func,
   setQs: PropTypes.func,
   questions: PropTypes.array,
   question: PropTypes.object,

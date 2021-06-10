@@ -22,7 +22,7 @@ export function CountDownTimer ({ stage, tl, setFinished }) {
     return () => { clearInterval(interval) }
   }, [timeLeft])
 
-  return <div>TimeLeft: {timeLeft}</div>
+  return <div>{timeLeft}</div>
 }
 
 CountDownTimer.propTypes = {

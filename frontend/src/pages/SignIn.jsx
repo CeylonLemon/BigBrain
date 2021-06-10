@@ -51,25 +51,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn () {
-  const { setToken, password, editEmail, editPassword } = useContext(UserContext);
+  const { setToken, password, email, editEmail, editPassword } = useContext(UserContext);
   const classes = useStyles();
   const query = useLocation().search
   const history = useHistory();
-  if (query) {
-    const q = query.split(/\?email=|&password=/);
-    q.shift();
+  function signIn () {
     const Data = {
-      email: q[0],
-      password: q[1],
+      email: email,
+      password: password,
     };
     sendRequest('admin/auth/login', Data, 'POST', false)
       .then(data => {
         setToken(data.token);
-        editPassword(password);
-        console.log(data.token)
         history.push('/home');
       })
       .catch(e => { alert(e) })
+
+    return false
   }
 
   return ((query)
@@ -83,12 +81,13 @@ export default function SignIn () {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <form className={classes.form} noValidate>
+                    <form className={classes.form} noValidate >
                         <TextField
                             variant="outlined"
                             margin="normal"
                             required
                             fullWidth
+                            value={email}
                             id="email"
                             label="Email Address"
                             name="email"
@@ -101,6 +100,7 @@ export default function SignIn () {
                         <TextField
                             variant="outlined"
                             margin="normal"
+                            value={password}
                             required
                             fullWidth
                             name="password"
@@ -108,17 +108,22 @@ export default function SignIn () {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            autoFocus
+                            onChange={(e) => {
+                              editPassword(e.target.value);
+                            }}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
                         />
                         <Button
-                            type="submit"
+                            type="button"
                             fullWidth
                             variant="contained"
                             color="primary"
                             className={classes.submit}
+                            onClick={() => { signIn() }}
                         >
                             Sign In
                         </Button>

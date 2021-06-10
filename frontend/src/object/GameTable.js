@@ -15,15 +15,16 @@ import { getComparator, stableSort } from '../helper/table';
 import { EnhancedTableHead } from './EnhancedTableHead'
 import { EnhancedTableToolbar } from './EnhancedTableToolbar'
 import { sendRequest } from '../helper/api';
-import { initGame } from './game';
-import { getAllQuizzes, getQuiz } from '../helper/request';
+import { Game } from './game';
+import { getAllQuizzes, getNewQuizId, getQuiz } from '../helper/request';
 import { UserContext } from '../helper/UserContext';
 import { IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+// import EditIcon from '@material-ui/icons/Edit';
 import { TF } from './GameTable.element'
 import { Link } from 'react-router-dom';
 import { PrimaryButton, PlayButton } from './Button';
+import SimpleDialogDemo from './Dialog';
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: '5% 0 0 5%',
@@ -60,13 +61,10 @@ export default function GameTable () {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
-  const [games, setGames] = React.useState([initGame()])
+  const [games, setGames] = React.useState([new Game()])
 
-  console.log(games)
-  function createData (Id, Title, questions) {
-    let Time = 0;
-    questions.forEach((q) => { Time += q.limit })
-    const Questions = questions.length
+  console.log(token)
+  function createData (Id, Title, Questions, Time) {
     return { Id, Title, Questions, Time };
   }
 
@@ -78,7 +76,8 @@ export default function GameTable () {
     const r = [];
     games.map(g => {
       console.log(g)
-      r.push(createData(g.id, g.name, g.questions))
+      // const t = g.calcTime
+      r.push(createData(g.id, g.name, g.questions.length, g.calcTime()))
       return g;
     })
     setRows(r);
@@ -101,19 +100,26 @@ export default function GameTable () {
     getAllQuizzes(token)
     // get further info of each quiz
       .then(async (data) => {
-        console.log(data.quizzes)
         const ps = [];
-        data.quizzes.forEach((q, i) => {
-          ps.push(getQuiz(q.id, token)
-            .then(data => {
-              q.questions = data.questions;
-              q.owner = data.owner;
-              gs.push(q);
-            }))
-        })
+        if (data.quizzes.length !== 0) {
+          data.quizzes.forEach((q, i) => {
+            ps.push(getQuiz(q.id, token)
+              .then(data => {
+                const g = new Game()
+                console.log(g)
+                Object.assign(q, data)
+                Object.assign(g, q)
+                console.log(g)
+                gs.push(g);
+              }))
+          })
+        } else {
+          await getNewQuizId('A New Quiz', token)
+          getAllGames()
+        }
         return Promise.all(ps)
       }).then(() => {
-        setGames(gs);
+        if (gs.length !== 0) { setGames(gs); }
       })
   }
 
@@ -193,10 +199,9 @@ export default function GameTable () {
                             {stableSort(rows, getComparator(order, orderBy))
                               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                               .map((row, index) => {
-                                console.log(row)
                                 const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
-
+                                console.log(row)
                                 return (
                                         <TableRow
                                             hover
@@ -216,7 +221,7 @@ export default function GameTable () {
                                             <TableCell align="left" component="th" id={labelId} scope="row" padding="none">
                                                 {row.Id}
                                             </TableCell>
-                                            <TableCell align="left" padding={'5px'}>{row.Title}</TableCell>
+                                            <TableCell align="left" style={{ padding: '5px' }}>{row.Title}</TableCell>
                                             <TableCell align="left">{row.Questions}</TableCell>
                                             <TableCell align="left">{row.Time}</TableCell>
                                             <TableCell align="left">
@@ -230,16 +235,22 @@ export default function GameTable () {
                                                                                 type='deleteButton'>
                                                 <DeleteIcon fontSize="small" />
                                             </IconButton>
-                                                <Link to={{
-                                                  pathname: '/editGames/newGame',
-                                                  state: { game: games[index] }
-                                                }}>
-                                                    <IconButton aria-label="edit"
-                                                                className={classes.margin}>
-                                                        <EditIcon fontSize="small" />
-                                                    </IconButton>
-                                                </Link>
-
+                                                {/* <Link to={{ */}
+                                                {/*  pathname: '/editGames/newGame', */}
+                                                {/*  state: { game: games[index] } */}
+                                                {/* }}> */}
+                                                {/*    <IconButton aria-label="edit" */}
+                                                {/*                className={classes.margin}> */}
+                                                {/*        <EditIcon fontSize="small" /> */}
+                                                {/*    </IconButton> */}
+                                                {/* </Link> */}
+                                            <SimpleDialogDemo props={{
+                                              game: games[index],
+                                              setGames: setGames,
+                                              games: games,
+                                              index: index
+                                            }
+                                                }/>
                                             </TableCell>
                                         </TableRow>
                                 );
@@ -269,7 +280,7 @@ export default function GameTable () {
                 />
                 <Link to={{
                   pathname: '/editGames/newGame',
-                  state: { game: initGame() }
+                  state: { game: new Game() }
                 }}>
                     <PrimaryButton text={'✛'} type={'addGame'}/>
                 </Link>

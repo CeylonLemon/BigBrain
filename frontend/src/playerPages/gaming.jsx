@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { getCorrect, getQuestion, getResult, putAnswers } from '../helper/request';
 import { Question } from '../object/question';
-import { initQuestion } from '../object/game';
+import { Question as Q } from '../object/game';
 import { CountDownTimer } from '../object/countDownTimer';
 import { Container } from '@material-ui/core';
 
 export function Gaming () {
   const [curStage, setCurStage] = React.useState('notStart');
-  const [question, setQuestion] = React.useState(initQuestion());
+  const [question, setQuestion] = React.useState(new Q());
   const [pending, setPending] = React.useState(true);
   const [end, setEnd] = React.useState(false)
   const [ans, setAns] = React.useState([])

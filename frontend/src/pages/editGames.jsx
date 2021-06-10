@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { EditQuestion } from '../object/editQuestion';
 import { Link, Redirect, Route, Switch, useLocation, useHistory } from 'react-router-dom';
-import { initQuestion } from '../object/game';
+import { Question } from '../object/game';
 import { sendRequest } from '../helper/api';
 import { UserContext } from '../helper/UserContext';
 import { SaveButton } from '../object/Button';
@@ -18,6 +18,7 @@ import {
 export function EditGames () {
   const { token } = useContext(UserContext);
   const game = useLocation().state.game;
+  const path = useLocation().pathname;
   const history = useHistory();
   const [Game, setGame] = React.useState(game);
   const [questions, setQuestions] = React.useState(game.questions);
@@ -89,10 +90,22 @@ export function EditGames () {
   }
 
   function addQuestion () {
-    const q = initQuestion();
+    const q = new Question();
     q.qid = game.questions.length;
     game.questions.push(q);
     setQuestions(game.questions);
+  }
+
+  function deleteQuestion (idx, value) {
+    // const qs = [...questions];
+    game.questions.splice(idx, 1);
+    setQuestions(game.questions);
+    const Qid = path.substr(-2)
+    console.log(game.questions.length, Qid + +1)
+    if (game.questions.length < Qid + +1) {
+      history.push('/editGames/' + game.id + '/question' + (Qid - 1),
+        { game: game })
+    }
   }
 
   return <EditGamesContainer>
@@ -102,41 +115,54 @@ export function EditGames () {
           Game name:
           <input type="text" onChange={(e) => {
             setName(e.target.value)
-          }} value={name}/>
+          }}
+                 value={name}/>
         </div>
 
-        <div>Add picture <input type="file"
-                                onChange={(e) => { uploadFile(e); }}/>
+        <div>Add picture
+            <input type="file"
+                   onChange={(e) => { uploadFile(e); }}/>
         </div>
       </Container>
 
       <Container>
-        <img src={picture} style={{ width: '300px', height: '300px' }}/>
+        <img src={picture}
+             style={{ width: '300px', height: '300px' }}
+        />
       </Container>
       <Buttons>
-        <SaveButton clickFunc={submitChange} text={'Confirm'} type={'confirmEdit'}/>
+        <SaveButton clickFunc={submitChange}
+                    text={'Confirm'}
+                    type={'confirmEdit'}
+        />
       </Buttons>
     </Contain>
 
     <Wrapper>
       <QNavigator>
         {questions.map((q, i) =>
-            <Link to={{
-              pathname: '/editGames/' + game.id + '/question' + i,
-              state: { game: game }
-            }}
-                  style={{ marginRight: '3%' }}
-                  key={i}>{i}</Link>)}
+            <Link
+                to={{
+                  pathname: '/editGames/' + game.id + '/question' + i,
+                  state: { game: game }
+                }}
+                style={{ marginRight: '3%' }}
+                key={i}>{i}</Link>)}
       </QNavigator>
       <div>
 
         {
           <Switch>{
-            questions.map((q, i) => <Route path={
-              '/editGames/' + game.id + '/question' + i} key={i}>
-              <EditQuestion questions={game.questions} question={q}
-                            setQs={setQuestions} idx={i} addQ={addQuestion}/></Route>
-            )
+            questions.map((q, i) => <Route
+                path={'/editGames/' + game.id + '/question' + i}
+                key={i}>
+              <EditQuestion questions={game.questions}
+                            question={q}
+                            setQs={setQuestions}
+                            idx={i}
+                            addQ={addQuestion}
+                            deleteQ={deleteQuestion}
+              /></Route>)
           }
           </Switch>
         }

@@ -3,16 +3,17 @@
  * @param {*} path The url to make the reques to.
  * @param {*} options Additiona options to pass to fetch.
  */
+
 const getJSON = (path, options) =>
+
   fetch(path, options)
-    .then(res => {
+    .then(async res => {
+      console.log(res)
       if (res.status >= 400 && res.status < 600) {
-        throw new Error('Bad response from server');
+        await res.text().then(t => { throw new Error(t); })
+        // throw new Error(res.text())
       }
       return res.json();
-    }
-    ).catch((e) => {
-      console.log(e);
     })
 
 /**

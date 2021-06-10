@@ -11,7 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { sendRequest } from '../helper/api';
 
 function Copyright () {
@@ -48,21 +48,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp () {
-  const { setToken, password, editEmail, editPassword } = useContext(UserContext);
+  const { setToken, password, email, editEmail, editPassword, name, editName } = useContext(UserContext);
+  console.log(22)
   const classes = useStyles();
-  const query = useLocation().search
+  // const query = useLocation().search
   const history = useHistory();
-  if (query) {
-    const q = query.split(/\?firstName=|&email=|&password=/);
-    q.shift();
+
+  function signIn () {
     const Data = {
-      name: q[0],
-      email: q[1],
-      password: q[2],
+      name: name,
+      email: email,
+      password: password,
     };
     sendRequest('admin/auth/register', Data, 'POST', false)
-      .then(data => {
-        setToken(data.token);
+      .then(async data => {
+        await setToken(data.token);
         editPassword(password);
         history.push('/home');
       })
@@ -91,6 +91,7 @@ export default function SignUp () {
                                 id="firstName"
                                 label="Name"
                                 autoFocus
+                                onChange={(e) => { editName(e.target.value) }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -115,15 +116,17 @@ export default function SignUp () {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                onChange={(e) => { editPassword(e.target.value) }}
                             />
                         </Grid>
                     </Grid>
                     <Button
-                        type="submit"
+                        type="button"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={() => signIn()}
                     >
                         Sign Up
                     </Button>

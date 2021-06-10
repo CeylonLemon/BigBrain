@@ -19,5 +19,8 @@
             "functions": "never"
         }],
         "semi": ["error", "always"]
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
     }
 }

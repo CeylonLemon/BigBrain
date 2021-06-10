@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import './App.css';
 import { EditGames } from './pages/editGames';
 import { Home } from './pages/home'
@@ -19,14 +19,13 @@ import {
   Route,
   Redirect
 } from 'react-router-dom';
-
+// import StoreProvider from './object/store'
 function App11 () {
-  // const [mode, changeMode] = React.useState('login');
   const [name, editName] = React.useState('');
   const [email, editEmail] = React.useState('');
   const [password, editPassword] = React.useState('');
   const [token, setToken] = React.useState('');
-  const providerValue = useMemo(() => ({
+  const providerValue = React.useMemo(() => ({
     token,
     setToken,
     name,
@@ -37,33 +36,20 @@ function App11 () {
     editPassword
   }), [token, name, email, password]);
 
-  function Navigate () {
-    return (
-        <UserContext.Provider value={providerValue}>
-        <nav>
-        <ButtonAppBar/>
-    </nav>
-        </UserContext.Provider>);
-  }
-
   return (
+      <UserContext.Provider value={providerValue}>
     <Router>
-      <Navigate/>
+        <nav>
+            <ButtonAppBar/>
+        </nav>
       <div>
-          <UserContext.Provider value={providerValue}>
 
-            <Route path="/SignIn">
-                {token
-                  ? <Redirect to="/"/>
-                  : <SignIn/>
-                }
-            </Route>
+          <Route path="/SignIn">
+              <SignIn/>
+          </Route>
 
           <Route path="/SignUp">
-            {token
-              ? <Redirect to="/home" />
-              : <SignUp/>
-            }
+              <SignUp/>
           </Route>
 
             <Route path="/home">
@@ -109,10 +95,9 @@ function App11 () {
                   <GameTable/>
               </Route>
 
-          </UserContext.Provider>
-
       </div>
     </Router>
+      </UserContext.Provider>
   );
 }
 

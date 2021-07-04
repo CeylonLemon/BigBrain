@@ -40,6 +40,9 @@ export function addNewQuiz (name, token) {
 export function updateQuiz (id, Data, name, token) {
   return sendRequest('admin/quiz/' + id, Data, 'PUT', token)
 }
+export function deleteQuiz (id, token) {
+  return sendRequest('admin/quiz/' + id, false, 'DELETE', token)
+}
 
 export async function getNewQuizId (name, token) {
   const ids = []

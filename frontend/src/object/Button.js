@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import ClearIcon from '@material-ui/icons/Clear';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import { useHistory } from 'react-router-dom'
+import styled from 'styled-components';
 // import { fileToDataUrl } from '../helper/helper';
 
 const useStyles = makeStyles((theme) => ({
@@ -181,4 +182,61 @@ export function PlayButton ({ id, game }) {
 PlayButton.propTypes = {
   game: PropTypes.object,
   id: PropTypes.string,
+}
+export function BasicButton ({ text, clickHandler, style }) {
+  return <button
+        onClick= {clickHandler}
+        style = {style}
+    >
+        {text}
+    </button>
+}
+BasicButton.propTypes = {
+  style: PropTypes.object,
+  text: PropTypes.string,
+  clickHandler: PropTypes.func
+}
+export const ShadowButton = styled(BasicButton)`
+  border:none;
+  background:none;
+  box-shadow: 0.5px 0.5px 2px black;
+`
+
+export function TextButtons ({ label }) {
+  const classes = useStyles();
+
+  return (
+      <div className={classes.root}>
+        <Button color="primary">{label}</Button>
+
+      </div>
+  );
+}
+TextButtons.propTypes = {
+  label: PropTypes.string,
+}
+export function SecondaryButtons ({ label }) {
+  const classes = useStyles();
+
+  return (
+      <div className={classes.root}>
+        <Button color="secondary">{label}</Button>
+      </div>
+  );
+}
+SecondaryButtons.propTypes = {
+  label: PropTypes.string,
+}
+
+export function PrimaryButtons ({ label }) {
+  const classes = useStyles();
+
+  return (
+        <div className={classes.root}>
+            <Button color="primary">{label}</Button>
+        </div>
+  );
+}
+PrimaryButtons.propTypes = {
+  label: PropTypes.string,
 }

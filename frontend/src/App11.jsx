@@ -6,7 +6,7 @@ import { WaitForPin } from './pages/waitForPin';
 import { StartGame } from './pages/startGame';
 import { JoinGame } from './playerPages/joinGame';
 import { Gaming } from './playerPages/gaming';
-import { UserContext } from './helper/UserContext';
+import { AlertProvider, ContextProvider, ControlProvider } from './helper/UserContext';
 import { WaitForPlayers } from './pages/waitForPlayers';
 import { WaitingRoom } from './playerPages/waitingRoom';
 import { GameEnd } from './playerPages/gameEnd.jsx';
@@ -19,25 +19,14 @@ import {
   Route,
   Redirect
 } from 'react-router-dom';
+import Snackbars from './object/SnackBars';
 // import StoreProvider from './object/store'
 function App11 () {
-  const [name, editName] = React.useState('');
-  const [email, editEmail] = React.useState('');
-  const [password, editPassword] = React.useState('');
-  const [token, setToken] = React.useState('');
-  const providerValue = React.useMemo(() => ({
-    token,
-    setToken,
-    name,
-    editName,
-    email,
-    editEmail,
-    password,
-    editPassword
-  }), [token, name, email, password]);
-
+  const token = sessionStorage.getItem('token')
   return (
-      <UserContext.Provider value={providerValue}>
+  <ContextProvider>
+      <ControlProvider>
+          <AlertProvider>
     <Router>
         <nav>
             <ButtonAppBar/>
@@ -53,10 +42,8 @@ function App11 () {
           </Route>
 
             <Route path="/home">
-                {token
-                  ? <Home/>
-                  : <Redirect to="/SignIn" />
-                }
+                 <Home/>
+
             </Route>
             <Route exact path="/">
               {token
@@ -97,7 +84,10 @@ function App11 () {
 
       </div>
     </Router>
-      </UserContext.Provider>
+          <Snackbars/>
+          </AlertProvider>
+      </ControlProvider>
+  </ContextProvider>
   );
 }
 

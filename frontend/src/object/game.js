@@ -2,27 +2,17 @@ import { BlankPic } from '../helper/UserContext';
 export class Game {
   constructor () {
     this.name = 'A new quiz'
-    // this.id = 'newGame'
+    this.id = 1
     this.thumbnail = BlankPic
     this.questions = [new Question()]
-    // this.calcTime = () => {
-    //   let time = 0;
-    //   Array.from(this.questions).forEach((q, i) => { time = parseInt(time) + parseInt(q.limit) });
-    //   return time;
-    // }
-    // this.calcScore = () => {
-    //   let score = 0;
-    //   this.questions.forEach((q, i) => {
-    //     score = +parseInt(score) + +parseInt(q.points)
-    //   })
-    //   return score
-    // }
   }
 
   calcTime () {
     let time = 0;
+    if (!this.questions.length) { return 0 }
     this.questions.forEach((q, i) => { time = parseInt(time) + parseInt(q.limit) });
     // this.time = time
+    console.log('calc!', time)
     return time;
   }
 
@@ -36,14 +26,13 @@ export class Game {
 }
 export class Question {
   constructor () {
-    this.qid = 0
-    this.title = ''
-    this.limit = 5
-    this.url = ''
+    this.title = 'question'
+    this.duration = 5
     this.options = ['A', 'B']
     this.answers = ['A']
     this.points = 5
     this.thumbnail = BlankPic
+    this.type = 'Single Selection'
   }
 
   // function wrapQuestion () {

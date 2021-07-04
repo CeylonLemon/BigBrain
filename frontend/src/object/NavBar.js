@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import { UserContext } from '../helper/UserContext';
+// import { UserContext } from '../helper/UserContext';
 import { Link } from 'react-router-dom'
 import { Sugar } from './NavBar.element'
 import { MenuItem } from '@material-ui/core'
@@ -29,7 +29,7 @@ const TB = styled(Toolbar)`
 `
 export default function ButtonAppBar () {
   const classes = useStyles();
-  const { token, setToken } = useContext(UserContext)
+  const token = sessionStorage.getItem('token')
 
   return (
         <div className={classes.root}>
@@ -42,7 +42,7 @@ export default function ButtonAppBar () {
                         <MenuItem component={Link} to={'/home'}>Home</MenuItem>
                     </Sugar>
                     {token
-                      ? <MenuItem component={Button} onClick={() => { setToken(''); }}>Logout</MenuItem>
+                      ? <MenuItem component={Button} onClick={() => { sessionStorage.clear(); }}>Logout</MenuItem>
                       : <MenuItem component={Link} to={'/SignIn'}>Login</MenuItem>
                     }
                 </TB>

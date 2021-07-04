@@ -1,5 +1,5 @@
 // import React from 'react';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,8 +14,9 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory, useLocation } from 'react-router-dom';
-import { UserContext } from '../helper/UserContext';
+// import { UserContext } from '../helper/UserContext';
 import { sendRequest } from '../helper/api';
+import { UserContext } from '../helper/UserContext';
 
 function Copyright () {
   return (
@@ -51,7 +52,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn () {
-  const { setToken, password, email, editEmail, editPassword } = useContext(UserContext);
+  // const { setToken, password, email, editEmail, editPassword } = useContext(UserContext);
+  const [email, editEmail] = useState('')
+  const [password, editPassword] = useState('')
+  const { setToken } = useContext(UserContext)
   const classes = useStyles();
   const query = useLocation().search
   const history = useHistory();
@@ -62,7 +66,9 @@ export default function SignIn () {
     };
     sendRequest('admin/auth/login', Data, 'POST', false)
       .then(data => {
-        setToken(data.token);
+        // setToken(data.token);
+        sessionStorage.setItem('token', data.token)
+        setToken(data.token)
         history.push('/home');
       })
       .catch(e => { alert(e) })

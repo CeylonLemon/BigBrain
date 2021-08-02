@@ -92,12 +92,6 @@ const BasicEditor = forwardRef((props, ref) => {
   }
   const [editing, setEditing] = useState(false)
   const { isDevice } = useContext(MediaContext)
-  console.log(isDevice)
-  // const [titleEditState, setTitleEditState] = useState({
-  //   editing: false,
-  //   title: question.title
-  // })
-  // const theme = useTheme();
   const openEditor = () => {
     setEditing(prevState => !prevState)
   }
@@ -108,111 +102,109 @@ const BasicEditor = forwardRef((props, ref) => {
     alert(data)
   };
   return (
-      <Card className={isDevice ? classes.deviceRoot : classes.root}>
-          <div className={isDevice ? classes.deviceDetails : classes.details}>
-              <CardContent className={classes.content}>
-                  <form
-                      autoComplete='off'
-                      style={{ padding: '1vh 0 1vh 0' }}
-                      onSubmit={handleSubmit(onSubmit)}
-                  >
-                      <Controller
-                          name="Duration"
-                          control={control}
-                          render={
-                              ({ field }) =>
-                                  <DenseTextFields
-                                      label='Duration'
-                                      {...field}
-                                  />
-                          }
-                      />
-                      <Controller
-                          name="Points"
-                          control={control}
-                          render={
-                              ({ field }) =>
-                                  <DenseTextFields
-                                      label='Points'
-                                      {...field}
-                                  />
-                          }
-                      />
-                      <Controller
-                          name="Type"
-                          control={control}
-                          render={
-                              ({ field }) =>
-                                  <MultilineTextFields
-                                      value='Single'
-                                      field={{ ...field }}
-                                  />
-                          }
-                      />
-                      <div className={classes.title}>
-                          {editing
-                            ? <div style={{ paddingTop: '10px' }}>
-                                  <Controller
-                                      name="Title"
-                                      control={control}
-                                      render={
-                                          ({ field }) =>
-                                              <TextareaAutosize
-                                                  minRows={2}
-                                                  maxRows={4}
-                                                  style={{ width: '28vh', margin: 0 }}
-                                                  {...field}
-                                              />
-                                      }
-                                  />
-                                  <SubmitIcon
-                                      handleClick={openEditor}
-                                      style={{
-                                        width: '3vh',
-                                        height: '3vh',
-                                        paddingLeft: '2px'
-                                      }}/>
-                              </div>
-                            : <Typography variant="h5" color="textSecondary">
-                                  {watch('Title')}
-                                  <span style={{ }}>
-                                  <EditIcon
-                                      style={{
-                                        width: '3vh',
-                                        height: '3vh',
-                                        position: 'relative',
-                                        top: '0.5vh',
-                                        paddingLeft: '2px'
-                                      }}
-                                      handleClick={openEditor}
-                                  />
+        <Card className={isDevice ? classes.deviceRoot : classes.root}>
+            <div className={isDevice ? classes.deviceDetails : classes.details}>
+                <CardContent className={classes.content}>
+                    <form
+                        autoComplete='off'
+                        style={{ padding: '1vh 0 1vh 0' }}
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
+                        <Controller
+                            name="Duration"
+                            control={control}
+                            render={
+                                ({ field }) =>
+                                    <DenseTextFields
+                                        label='时长'
+                                        {...field}
+                                    />
+                            }
+                        />
+                        <Controller
+                            name="Points"
+                            control={control}
+                            render={
+                                ({ field }) =>
+                                    <DenseTextFields
+                                        label='分数'
+                                        {...field}
+                                    />
+                            }
+                        />
+                        <Controller
+                            name="Type"
+                            control={control}
+                            render={
+                                ({ field }) =>
+                                    <MultilineTextFields
+                                        value='单选'
+                                        field={{ ...field }}
+                                    />
+                            }
+                        />
+                        <div className={classes.title}>
+                            {editing
+                              ? <div style={{ paddingTop: '10px' }}>
+                                    <Controller
+                                        name="Title"
+                                        control={control}
+                                        render={
+                                            ({ field }) =>
+                                                <TextareaAutosize
+                                                    minRows={2}
+                                                    maxRows={4}
+                                                    style={{ width: '28vh', margin: 0 }}
+                                                    {...field}
+                                                />
+                                        }
+                                    />
+                                    <SubmitIcon
+                                        handleClick={openEditor}
+                                        style={{
+                                          width: '3vh',
+                                          height: '3vh',
+                                          paddingLeft: '2px'
+                                        }}/>
+                                </div>
+                              : <Typography variant="h5" color="textSecondary">
+                                    {watch('Title')}
+                                    <span style={{ }}>
+                                        <EditIcon
+                                            style={{
+                                              width: '3vh',
+                                              height: '3vh',
+                                              position: 'relative',
+                                              top: '0.5vh',
+                                              paddingLeft: '2px'
+                                            }}
+                                            handleClick={openEditor}
+                                        />
+                                    </span>
+                                </Typography>
+                            }
+                        </div>
+                    </form>
 
-                              </span>
-                              </Typography>
-
-                          }
-                      </div>
-                  </form>
-
-              </CardContent>
-              <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <AddQuestion
-                      style={{ height: '25px', width: '25px' }}
+                </CardContent>
+                <CardActions style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <AddQuestion
+                        style={{ height: '25px', width: '25px' }}
                         handleClick={addOption}
-                  />
-                  <FileInput style={{ height: '25px', width: '25px', marginTop: '5px' }}/>
-                  <DeleteQuestion
-                      style={{ height: '25px', width: '25px' }}
-                      handleClick={deleteQuestion}
-                  />
-              </CardActions>
-          </div>
-          <CardMedia
-              className={isDevice ? classes.deviceCover : classes.cover}
-              image={BlankPic}
-              title="Live from space album cover"
-          />
-      </Card>
+                    />
+                    <FileInput style={{ height: '25px', width: '25px', marginTop: '5px' }}/>
+                    <DeleteQuestion
+                        style={{ height: '25px', width: '25px' }}
+                        handleClick={deleteQuestion}
+                    />
+                </CardActions>
+            </div>
+            <CardMedia
+                className={isDevice ? classes.deviceCover : classes.cover}
+                image={BlankPic}
+                title="Live from space album cover"
+            />
+        </Card>
   );
 })
 BasicEditor.propTypes = {

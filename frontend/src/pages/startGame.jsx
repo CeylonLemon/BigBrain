@@ -15,10 +15,6 @@ const useStyles = makeStyles((theme) => ({
     transform: 'translate(-50%,-50%)'
   }
 }))
-// const connectToServer = (socketRef, body) => {
-//   const io = require('socket.io-client')
-//   socketRef.current = io('http://localhost:5005', body)
-// }
 
 export function StartGame () {
   const classes = useStyles()
@@ -31,7 +27,6 @@ export function StartGame () {
 
   useEffect(() => {
     connectToServer(socket, { query: { pin, role: 'host' } })
-
     socket.current.on('end game', () => {
       socket.current.close()
       history.push('/endOfGame')
@@ -42,12 +37,10 @@ export function StartGame () {
   }, [])
 
   return <div className={classes.root} id='boardWrapper'>
-
             <QuizBoard
                 ref={quizBoardRef}
                 gid={parseInt(gid)}
                 pin={pin}
             />
-
     </div>
 }

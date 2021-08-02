@@ -97,56 +97,31 @@ export default function CircularIntegration ({ handleButtonClick }) {
     };
   }, []);
 
-  // const handleButtonClick = () => {
-  //   if (!loading) {
-  //     setSuccess(false);
-  //     setLoading(true);
-  //     timer.current = window.setTimeout(() => {
-  //       setSuccess(true);
-  //       setLoading(false);
-  //     }, 2000);
-  //   }
-  // };
-
   return (
-        <div className={classes.root}>
-            <div className={classes.wrapper}>
-                <Fab
-                    aria-label="save"
-                    color="secondary"
-                    className={buttonClassname}
-                    onClick={() => {
-                      handleButtonClick(loading, setLoading, setSuccess)
-                      // if (!loading) {
-                      //   setSuccess(false);
-                      //   setLoading(true);
-                      //   timer.current = window.setTimeout(() => {
-                      //     setSuccess(true);
-                      //     setLoading(false);
-                      //   }, 2000);
-                      // }
-                    }}
-                    size={'small'}
-                >
-                    {success ? <CheckIcon /> : <SaveIcon />}
-                </Fab>
-                {loading && <CircularProgress size={40} className={classes.fabProgress} />}
-              <div className={classes.alert}>
-                <Alert severity={success ? 'success' : 'error'} >Change unsaved!</Alert>
-              </div>
-            </div>
-            {/* <div className={classes.wrapper}> */}
-            {/*    <Button */}
-            {/*        variant="contained" */}
-            {/*        color="primary" */}
-            {/*        className={buttonClassname} */}
-            {/*        disabled={loading} */}
-            {/*        onClick={handleButtonClick} */}
-            {/*    > */}
-            {/*        Accept terms */}
-            {/*    </Button> */}
-            {/* </div> */}
+      <div className={classes.root}>
+        <div className={classes.wrapper}>
+          <Fab
+              aria-label="save"
+              color="secondary"
+              className={buttonClassname}
+              onClick={() => {
+                handleButtonClick(loading, setLoading, setSuccess)
+              }}
+              size={'small'}
+          >
+            {success ? <CheckIcon /> : <SaveIcon />}
+          </Fab>
+          {loading && <CircularProgress size={40} className={classes.fabProgress} />}
+          <div className={classes.alert}>
+            {
+              success
+                ? <Alert severity={'success'}>更改已保存!</Alert>
+                : <Alert severity={'error'}>更改未保存!</Alert>
+
+            }
+          </div>
         </div>
+      </div>
   );
 }
 CircularIntegration.propTypes = {

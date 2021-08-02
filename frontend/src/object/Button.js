@@ -10,8 +10,6 @@ import { useHistory } from 'react-router-dom'
 import styled from 'styled-components';
 import { UploadPic, Add } from './icons';
 
-// import { fileToDataUrl } from '../helper/helper';
-
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
@@ -44,14 +42,14 @@ const useStyles = makeStyles((theme) => ({
 export function DeleteButton ({ clickFunc }) {
   const classes = useStyles();
   return <Button
-        variant="contained"
-        color="secondary"
-        className={classes.button}
-        startIcon={<DeleteIcon />}
-        onClick={() => clickFunc()}
-    >
-        Delete
-    </Button>
+      variant="contained"
+      color="secondary"
+      className={classes.button}
+      startIcon={<DeleteIcon />}
+      onClick={() => clickFunc()}
+  >
+    Delete
+  </Button>
 }
 
 DeleteButton.propTypes = {
@@ -72,7 +70,7 @@ export function SaveButton ({ clickFunc, text, type, style, size }) {
       }}
       size={size}
   >
-        {text}
+    {text}
   </Button>
 }
 SaveButton.propTypes = {
@@ -90,7 +88,7 @@ export function PrimaryButton ({ text, type, size, onClick }) {
       size={size}
       onClick={() => { onClick() }}
   >
-        {text}
+    {text}
   </Button>
 }
 PrimaryButton.propTypes = {
@@ -102,11 +100,11 @@ PrimaryButton.propTypes = {
 export function Clearicon ({ clickFunc, idx, ifDisplay }) {
   if (ifDisplay) {
     return <ClearIcon
-          onClick={() => {
-            clickFunc(idx);
-          }}
-          style={{ fontSize: '20px' }}
-      > </ClearIcon>
+        onClick={() => {
+          clickFunc(idx);
+        }}
+        style={{ fontSize: '20px' }}
+    > </ClearIcon>
   } else {
     return <div style={{ paddingLeft: '20px' }}>   </div>
   }
@@ -118,8 +116,6 @@ Clearicon.propTypes = {
 }
 
 export function UploadButton ({ onChange }) {
-  // const classes = useStyles();
-
   const uploadStyle = {
     display: 'none',
   }
@@ -134,25 +130,24 @@ export function UploadButton ({ onChange }) {
     cursor: 'pointer'
   }
   return <div>
-      <input type="file" id="file"
-             style={uploadStyle}
-             onChange={(e) => {
-               onChange(e)
-             }}
-      />
-      <label htmlFor="file" >
-          <Button style={labelStyle}>
-              Choose a photo
-          </Button>
+    <input type="file" id="file"
+           style={uploadStyle}
+           onChange={(e) => {
+             onChange(e)
+           }}
+    />
+    <label htmlFor="file" >
+      <Button style={labelStyle}>
+        Choose a photo
+      </Button>
 
-      </label>
+    </label>
   </div>
 }
 UploadButton.propTypes = {
   onChange: PropTypes.func,
 }
 export function PlayButton ({ id, game }) {
-  // const classes = useStyles();
   const history = useHistory()
   const handleClick = () => {
     history.push({
@@ -160,10 +155,9 @@ export function PlayButton ({ id, game }) {
       state: { game: game }
     })
   }
-  console.log(111)
   return <div>
-        <PlayArrowIcon onClick={handleClick} />
-    </div>
+    <PlayArrowIcon onClick={handleClick} />
+  </div>
 }
 
 PlayButton.propTypes = {
@@ -172,11 +166,11 @@ PlayButton.propTypes = {
 }
 export function BasicButton ({ text, clickHandler, style }) {
   return <button
-        onClick= {clickHandler}
-        style = {style}
-    >
-        {text}
-    </button>
+      onClick= {clickHandler}
+      style = {style}
+  >
+    {text}
+  </button>
 }
 BasicButton.propTypes = {
   style: PropTypes.object,
@@ -219,9 +213,9 @@ export function PrimaryButtons ({ label, handleClick }) {
   const classes = useStyles();
 
   return (
-        <div className={classes.root}>
-            <Button color="primary" onClick={() => { handleClick() }}>{label}</Button>
-        </div>
+      <div className={classes.root}>
+        <Button color="primary" onClick={() => { handleClick() }}>{label}</Button>
+      </div>
   );
 }
 PrimaryButtons.propTypes = {
@@ -252,19 +246,19 @@ export function FileInput ({ handleChange, style, uploadRef, id }) {
     }
   }
   return <Fragment>
-        <input
-            type='file'
-            id={id}
-            style={styleSheet.input}
-            onChange={handleChange}
-            ref={uploadRef}
-        />
-        <label
-            htmlFor={id}
-            id='uploadButton'
+    <input
+        type='file'
+        id={id}
+        style={styleSheet.input}
+        onChange={handleChange}
+        ref={uploadRef}
+    />
+    <label
+        htmlFor={id}
+        id='uploadButton'
 
-        ><UploadPic style={style}/></label>
-    </Fragment>
+    ><UploadPic style={style}/></label>
+  </Fragment>
 }
 FileInput.propTypes = {
   uploadRef: PropTypes.object,
@@ -290,11 +284,8 @@ AddButton.propTypes = {
 export const TableButton = styled(Button)`
   height:4vh;
 `
-// export const StopButton = styled(Button)`
-//   color: red;
-// `
 
-export const StopButton = ({ handleClick }) => {
+export const StopButton = ({ handleClick, text }) => {
   const classes = useStyles()
   return <Button
       className={classes.stop}
@@ -302,10 +293,11 @@ export const StopButton = ({ handleClick }) => {
       color='secondary'
       onClick={handleClick}
       size='medium'
-  >STOP</Button>
+  >{text || 'STOP'}</Button>
 }
 StopButton.propTypes = {
   handleClick: PropTypes.func,
+  text: PropTypes.string,
 }
 export const StartButton = ({ handleClick, text }) => {
   const classes = useStyles()

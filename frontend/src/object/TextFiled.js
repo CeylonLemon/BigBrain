@@ -112,10 +112,10 @@ SmallTextFields.propTypes = {
 export function MultilineTextFields ({ defaultValue, field }) {
   const currencies = [
     {
-      label: 'Single',
+      label: '单选',
     },
     {
-      label: 'Multiple',
+      label: '多选',
     }
   ];
   // console.log(defaultValue)
@@ -130,7 +130,7 @@ export function MultilineTextFields ({ defaultValue, field }) {
           <TextField
               className={classes.root}
               select
-              label="Selection"
+              label="题目类型"
               variant="outlined"
               value = {value}
               size={'small'}

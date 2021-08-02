@@ -24,14 +24,14 @@ export function JoinGame () {
   return (
         <Box style={{ marginTop: '150px', textAlign: 'center' }}>
             <Typography gutterBottom variant="h2" component="h1">
-                Welcome to BigBrain
+                欢迎来到BigBrain!
             </Typography>
             <Typography gutterBottom variant="h4" component="h1">
                 <form autoComplete='off'>
-                    Your name:<DenseTextFields label='name' onChange={(e) => { setName(e.target.value) }}/>
+                    你的昵称:<DenseTextFields label='name' onChange={(e) => { setName(e.target.value) }}/>
                 </form>
             </Typography>
-            <StartButton text={'Enter'} handleClick={join}/>
+            <StartButton text={'确认'} handleClick={join}/>
         </Box>
   );
 }

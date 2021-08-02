@@ -13,8 +13,8 @@ export function Home () {
   }
   return (
       <Container ref={bodyRef} style={{ marginTop: '100px' }}>
-          <h2 id='greeting' style={{ paddingLeft: '8%' }}>
-              Welcome! {sessionStorage.getItem('email')}
+          <h2 id='greeting' style={{ padding: '0 0 3% 10%' }}>
+              欢迎! {sessionStorage.getItem('email')}
           </h2>
           <div>
               <TableWrapper bodyRef={bodyRef}/>

@@ -45,7 +45,7 @@ export default function CustomizedSwitches () {
                     name="checkedA"
                     id="switch"
                 />}
-                label="Select All"
+                label="全选"
 
             />
         </div>

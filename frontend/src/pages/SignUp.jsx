@@ -72,7 +72,7 @@ export default function SignUp () {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Sign up
+                    注册
                 </Typography>
                 <form className={classes.form} noValidate ref={formRef} onSubmit={signUp}>
                     <Grid container spacing={2}>
@@ -84,7 +84,7 @@ export default function SignUp () {
                                 required
                                 fullWidth
                                 id="firstName"
-                                label="Name"
+                                label="昵称"
                                 autoFocus
 
                             />
@@ -95,7 +95,7 @@ export default function SignUp () {
                                 required
                                 fullWidth
                                 id="email"
-                                label="Email Address"
+                                label="邮箱地址"
                                 name="email"
                                 autoComplete="email"
 
@@ -107,7 +107,7 @@ export default function SignUp () {
                                 required
                                 fullWidth
                                 name="password"
-                                label="Password"
+                                label="密码"
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
@@ -123,12 +123,12 @@ export default function SignUp () {
                         className={classes.submit}
                         // onClick={() => signIn()}
                     >
-                        Sign Up
+                        注册
                     </Button>
                     <Grid container justify="flex-end">
                         <Grid item >
                             <Link href='/SignIn' variant="body2">
-                                Already have an account? Sign in
+                                已有账户? 点此登录
                             </Link>
                         </Grid>
                     </Grid>

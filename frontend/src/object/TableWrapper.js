@@ -7,10 +7,7 @@ import MediaQuery from 'react-responsive/src';
 
 const useStyles = makeStyles((theme) => ({
   table: {
-    position: 'absolute',
-    top: '40%',
-    left: '50%',
-    transform: 'translate(-50%,-45%)',
+    margin: '0 auto',
     boxShadow: '1px 1px 5px black',
     minHeight: '300px',
     minWidth: '350px',
@@ -28,24 +25,22 @@ function TableWrapper ({ bodyRef }) {
   console.log('tablewrapper render')
   const { gamesState, gamesIsLoading } = useContext(UserContext);
   const classes = useStyles()
+
   const calcTime = (g) => {
     let time = 0;
     if (!g.questions.length) { return 0 }
     g.questions.forEach((q, i) => { time = parseInt(time) + parseInt(q.duration) });
-    // this.time = time
     return time;
   }
-  // gamesState.then(data => console.log(data))
-  console.log(gamesState.prototype)
+
   const rows = gamesState.games.map(g => {
     return [g.id, g.name, g.questions.length, calcTime(g), 'button']
   })
-  console.log(rows)
-  // rows.unshift(['ID', 'NAME', 'QUESTIONS', 'DURATION', 'BUTTON'])
+
   return <Fragment>
     {
     gamesIsLoading
-      ? <p>Loading...</p>
+      ? <p>加载中...</p>
       : <Fragment>
           <MediaQuery minWidth={691}>
             <Box className={classes.table} style={{ fontSize: '1.25em' }}>

@@ -47,11 +47,11 @@ export default function ButtonAppBar () {
                         <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                             <MenuIcon />
                         </IconButton>
-                        <MenuItem component={Link} to={'/home'}>Home</MenuItem>
+                        <MenuItem component={Link} to={'/home'}>主页</MenuItem>
                     </Sugar>
                     {token
-                      ? <MenuItem component={Button} onClick={logout} name='logoutButton'>Logout</MenuItem>
-                      : <MenuItem component={Link} to={'/SignIn'}>Login</MenuItem>
+                      ? <MenuItem component={Button} onClick={logout} name='logoutButton'>退出登录</MenuItem>
+                      : <MenuItem component={Link} to={'/SignIn'}>登录</MenuItem>
                     }
                 </TB>
             </AppBar>

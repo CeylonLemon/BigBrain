@@ -14,19 +14,11 @@ export function WaitForPlayers () {
   console.log(queryString.parse(location.search))
   const { gid, pin } = queryString.parse(location.search);
   const [players, setPlayers] = useState([])
-  // const [loading, setLoading] = useState(true)
-  // const [pageState, setPageState] = useState({
-  //   loading: true,
-  //   pin: null
-  // })
-  // const { pin, loading } = pageState
-  // const [pin, setPin] = useState(null)
   const socket = useRef()
   const { isDevice } = useContext(MediaContext)
   const { dispatchAlert } = useContext(AlertContext)
   const useStyles = makeStyles((theme) => ({
     root: {
-      // marginTop: '15%',
       position: 'absolute',
       left: '50%',
       transform: 'translate(-50%,0)',
@@ -59,7 +51,7 @@ export function WaitForPlayers () {
       '& > span': {
         position: 'relative',
         bottom: '2.5vh',
-        left: '37%',
+        left: '42%',
         padding: '1vh',
         fontSize: '4vh',
         fontWeight: 'bold',
@@ -150,7 +142,7 @@ export function WaitForPlayers () {
       <div className={isDevice ? classes.deviceRoot : classes.root}>
             <header className={classes.header}>
               <div className={classes.pin}>
-                <h1>Game PIN: <span id='pin'>{pin}</span></h1>
+                <h1>房间码: <span id='pin'>{pin}</span></h1>
                 <Copy
                     handleClick={() => {
                       copyLink(pin)
@@ -158,21 +150,21 @@ export function WaitForPlayers () {
                         type: ACTIONS.OPEN_ALERT,
                         payload: {
                           type: 'success',
-                          message: 'link has been copied'
+                          message: '链接复制成功'
                         }
                       })
                     }}
                     style={{ position: 'relative', height: '3.5vh', width: '3.5vh', top: '3.5vh', left: '3vh' }}/>
               </div>
 
-              <h1>Waiting for players...</h1>
+              <h1>等待其它玩家加入...</h1>
               <div className={classes.buttons}>
                 <StartButton handleClick={startThisGame}/>
                 <StopButton handleClick={endThisGame}/>
               </div>
 
             </header>
-            <div className={classes.divider}><Divider/><span>Players</span></div>
+            <div className={classes.divider}><Divider/><span>玩家</span></div>
             <div className={classes.playersList}>
               {players.map(player => (<ul key={player}>{player}</ul>))}
             </div>

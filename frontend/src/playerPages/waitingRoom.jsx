@@ -43,23 +43,23 @@ export function WaitingRoom () {
     justifyContent: 'space-around'
   }}>
     <Typography gutterBottom variant="h2" component="h1">
-      Waiting for hoster to start game
+      等待房主开启游戏
     </Typography>
     <Typography gutterBottom variant="h4" component="h1">
-      SessionID: {pin}
+      房间号码: {pin}
     </Typography>
     <Typography gutterBottom variant="h4" component="h1">
-      playerId: {pid}
+      玩家ID: {pid}
     </Typography>
     <Typography gutterBottom variant="h4" component="h1">
-      Invite other player to join in<Copy
+      邀请其他玩家加入<Copy
         handleClick={() => {
           copyLink(pin)
           dispatchAlert({
             type: ACTIONS.OPEN_ALERT,
             payload: {
               type: 'success',
-              message: 'link has been copied'
+              message: '链接复制成功'
             }
           })
         }}

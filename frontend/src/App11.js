@@ -1,7 +1,5 @@
 import React from 'react';
-// import './App.css';
 import { Home } from './pages/home'
-import { WaitForPin } from './pages/waitForPin';
 import { StartGame } from './pages/startGame';
 import { JoinGame } from './playerPages/joinGame';
 import Gaming from './playerPages/gaming';
@@ -20,71 +18,57 @@ import {
   Redirect
 } from 'react-router-dom';
 import Snackbars from './object/SnackBars';
-// import Snackbars from './object/SnackBars';
-// import StoreProvider from './object/store'
 function App11 () {
-  // const token = sessionStorage.getItem('token')
-  // const { haveToken } = useContext(UserContext)
   return (
       <MediaProvider>
-  <GamesProvider>
-      {/* <ControlProvider> */}
-          <AlertProvider>
-              <Snackbars/>
-    <Router>
-        <nav>
-            <ButtonAppBar/>
-        </nav>
-      <div>
-
-          <Route path="/SignIn">
-              <SignIn/>
-          </Route>
-
-          <Route path="/SignUp">
-              <SignUp/>
-          </Route>
-            <CacheSwitch>
-                <CacheRoute path="/home" component={Home}/>
-            </CacheSwitch>
-
-            <Route exact path="/">
-              {sessionStorage.getItem('token')
-                ? <Redirect to="/home" />
-                : <Redirect to="/SignIn" />
-              }
-            </Route>
-              <Route exact path='/waitForPin'>
-                <WaitForPin/>
-              </Route>
-              <Route exact path='/waitForPlayers'>
-                  <WaitForPlayers/>
-              </Route>
-              <Route path='/startGame'>
-                  <StartGame/>
-              </Route>
-              <Route exact path='/waitingRoom'>
-                  <WaitingRoom/>
-              </Route>
-              <Route path='/joinGame/:sessionId'>
-                  <JoinGame/>
-              </Route>
-              <Route exact path='/gaming'>
-                  <Gaming/>
-              </Route>
-          <Route exact path='/endOfGame'>
-              <EndOfGame/>
-          </Route>
-              <Route path='/gameEnd/:pid'>
-                  <GameEnd/>
-              </Route>
-
-      </div>
-    </Router>
-
-          </AlertProvider>
-      {/* </ControlProvider> */}
-  </GamesProvider>
+          <GamesProvider>
+              <AlertProvider>
+                  <Snackbars/>
+                  <Router>
+                      <nav>
+                          <ButtonAppBar/>
+                      </nav>
+                      <div>
+                          <Route path="/SignIn">
+                              <SignIn/>
+                          </Route>
+                          <Route path="/SignUp">
+                              <SignUp/>
+                          </Route>
+                          <CacheSwitch>
+                              <CacheRoute path="/home" component={Home}/>
+                          </CacheSwitch>
+                          <Route exact path="/">
+                              {sessionStorage.getItem('token')
+                                ? <Redirect to="/home" />
+                                : <Redirect to="/SignIn" />
+                              }
+                          </Route>
+                          <Route exact path='/waitForPlayers'>
+                              <WaitForPlayers/>
+                          </Route>
+                          <Route path='/startGame'>
+                              <StartGame/>
+                          </Route>
+                          <Route exact path='/waitingRoom'>
+                              <WaitingRoom/>
+                          </Route>
+                          <Route path='/joinGame/:sessionId'>
+                              <JoinGame/>
+                          </Route>
+                          <Route exact path='/gaming'>
+                              <Gaming/>
+                          </Route>
+                          <Route exact path='/endOfGame'>
+                              <EndOfGame/>
+                          </Route>
+                          <Route path='/gameEnd/:pid'>
+                              <GameEnd/>
+                          </Route>
+                      </div>
+                  </Router>
+              </AlertProvider>
+          </GamesProvider>
       </MediaProvider>
   );
 }

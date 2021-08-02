@@ -38,7 +38,7 @@ export const turn = {
 export default function Table ({ rows, mediaSize }) {
   console.log(rows)
   const { dispatchGamesState } = useContext(UserContext)
-  const header = ['ID', 'NAME', 'QUESTIONS', 'DURATION', 'BUTTON']
+  const header = ['ID', '名称', '问题', '时长', '操作']
   const useStyles = makeStyles((theme) => ({
     buttons: {
       margin: '1vh 3vh 0 0',
@@ -123,10 +123,10 @@ export default function Table ({ rows, mediaSize }) {
               <CustomizedSwitches/>
               <div className={classes.buttons}>
                   <TableButton variant="outlined" size='small' color="primary" name='addQuizButton' onClick={addQuiz}>
-                      <span style={{ fontFamily: 'Oswald' }}>ADD QUIZ</span>
+                      <span style={{ fontFamily: 'Oswald' }}>添加问题</span>
                   </TableButton>
                   <TableButton variant="outlined" size='small' name='deleteQuizButton' color="secondary">
-                      <span style={{ fontFamily: 'Oswald' }}>DELETE</span>
+                      <span style={{ fontFamily: 'Oswald' }}>删除</span>
                   </TableButton>
               </div>
           </div>

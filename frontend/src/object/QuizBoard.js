@@ -183,8 +183,8 @@ const QuizBoard = forwardRef((props, ref) => {
                   {pid
                     ? undefined
                     : <CardActions className={classes.buttons}>
-                          <StopButton handleClick={endThisGame(gid, history)}/>
-                          <StartButton handleClick={advanceThisGame(gid)} text={'ADVANCE'}/>
+                          <StopButton handleClick={endThisGame(gid, history)} text={'结束游戏'}/>
+                          <StartButton handleClick={advanceThisGame(gid)} text={'下一题'}/>
                       </CardActions>
                   }
                   <Box className={classes.timer}>
@@ -225,18 +225,9 @@ const QuizBoard = forwardRef((props, ref) => {
                             }
                           })}
                       </Box>
-
                   }
-                  {/* <Box> */}
-                  {/*    {question.question.options.map((question, i) => */}
-                  {/*    <NotAnswered */}
-                  {/*            key={i} */}
-                  {/*            style={{ height: '4vh', width: '4vh', margin: '1vh 0.5vh 1vh 1vh' }} */}
-                  {/*        /> */}
-                  {/*    )} */}
-                  {/* </Box> */}
                   <Box className={classes.answersInfo}>
-                      <span>{`Answered: ${question.stage}/${pid ? numOfQuestions : game.questions.length}`}</span>
+                      <span>{`已回答: ${question.stage}/${pid ? numOfQuestions : game.questions.length}`}</span>
                   </Box>
               </Paper>
           </CardContent>

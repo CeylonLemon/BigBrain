@@ -22,8 +22,6 @@ const Gaming = () => {
   const queryString = require('query-string')
   const { pin, pid } = queryString.parse(location.search)
   const { question, numOfQuestions } = location.state
-  console.log(numOfQuestions)
-  // const [question, setQuestion] = useState(location.state.question);
   const socket = useRef()
   const quizBoardRef = useRef()
 
@@ -40,7 +38,6 @@ const Gaming = () => {
 
   return (
       <div className={classes.root} id='boardWrapper'>
-
         <QuizBoard
             ref={quizBoardRef}
             player={true}
@@ -49,7 +46,6 @@ const Gaming = () => {
             questionForPlayer={question}
             numOfQuestions={numOfQuestions}
         />
-
       </div>
   );
 }

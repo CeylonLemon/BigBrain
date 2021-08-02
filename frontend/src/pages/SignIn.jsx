@@ -80,7 +80,7 @@ export default function SignIn () {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        登录
                     </Typography>
                     <form className={classes.form} noValidate onSubmit={signIn} >
                         <TextField
@@ -90,7 +90,7 @@ export default function SignIn () {
                             fullWidth
                             value={email}
                             id="email"
-                            label="Email Address"
+                            label="邮箱地址"
                             name="email"
                             autoComplete="email"
                             autoFocus
@@ -105,7 +105,7 @@ export default function SignIn () {
                             required
                             fullWidth
                             name="password"
-                            label="Password"
+                            label="密码"
                             type="password"
                             id="password"
                             autoComplete="current-password"
@@ -116,7 +116,7 @@ export default function SignIn () {
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
+                            label="记住我"
                         />
                         <Button
                             type="submit"
@@ -124,15 +124,15 @@ export default function SignIn () {
                             variant="contained"
                             color="primary"
                             className={classes.submit}
-                            name='login'
+                            name='SignIn'
                             // onClick={() => { signIn() }}
                         >
-                            Sign In
+                            登录
                         </Button>
                         <Grid container>
                             <Grid item>
                                 <Link href='/SignUp' variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                    {'还没有自己的账户? 点此注册'}
                                 </Link>
                             </Grid>
                         </Grid>

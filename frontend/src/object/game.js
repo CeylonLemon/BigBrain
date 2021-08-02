@@ -12,7 +12,6 @@ export class Game {
     let time = 0;
     if (!this.questions.length) { return 0 }
     this.questions.forEach((q, i) => { time = parseInt(time) + parseInt(q.limit) });
-    // this.time = time
     console.log('calc!', time)
     return time;
   }
@@ -36,27 +35,4 @@ export class Question {
     this.thumbnail = BlankPic
     this.type = 'Single'
   }
-
-  // function wrapQuestion () {
-  //   return {
-  //     "title": this.title,
-  //     "options": this.options,
-  //     "answers": this.answers,
-  //     "timelimit": this.limit,
-  //     "points": this.points,
-  //   };
-  // }
 }
-
-// export function initGame () {
-//   return new Game({
-//     name: 'A new quiz',
-//     owner: '',
-//     active: '',
-//     createdAt: '',
-//     id: 'newGame',
-//     thumbnail: BlankPic,
-//     oldSessions: '',
-//     questions: [initQuestion()]
-//   })
-// }

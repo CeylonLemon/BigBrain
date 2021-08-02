@@ -10,6 +10,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 function EndOfGame () {
   const classes = useStyles()
-  return <p className={classes.root}>This is end of Game</p>
+  return <p className={classes.root}>问答结束</p>
 }
 export default EndOfGame

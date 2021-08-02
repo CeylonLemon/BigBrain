@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useRef, useContext } from 'react';
 import { UserContext } from '../helper/UserContext';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -11,8 +11,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { signUpRequest } from '../helper/api';
 import { useHistory } from 'react-router-dom';
-import { sendRequest } from '../helper/api';
 
 function Copyright () {
   return (
@@ -48,25 +48,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp () {
-  const { setToken, password, email, editEmail, editPassword, name, editName } = useContext(UserContext);
-  console.log(22)
+  const { setHaveToken } = useContext(UserContext);
+  const formRef = useRef()
   const classes = useStyles();
-  // const query = useLocation().search
   const history = useHistory();
 
-  function signIn () {
-    const Data = {
-      name: name,
-      email: email,
-      password: password,
-    };
-    sendRequest('admin/auth/register', Data, 'POST', false)
-      .then(async data => {
-        await setToken(data.token);
-        editPassword(password);
-        history.push('/home');
-      })
-      .catch(e => { alert(e) })
+  async function signUp (e) {
+    e.preventDefault()
+    const inputs = Array.from(formRef.current.getElementsByTagName('input'))
+    const [name, email, password] = inputs.map(input => { return input.value })
+    const data = await signUpRequest(name, email, password)
+    sessionStorage.setItem('token', data.token)
+    sessionStorage.setItem('email', data.email)
+    setHaveToken(true)
+    history.push('/home');
   }
 
   return (
@@ -79,7 +74,7 @@ export default function SignUp () {
                 <Typography component="h1" variant="h5">
                     Sign up
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} noValidate ref={formRef} onSubmit={signUp}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -91,7 +86,7 @@ export default function SignUp () {
                                 id="firstName"
                                 label="Name"
                                 autoFocus
-                                onChange={(e) => { editName(e.target.value) }}
+
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -103,7 +98,7 @@ export default function SignUp () {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
-                                onChange={(e) => { editEmail(e.target.value) }}
+
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -116,17 +111,17 @@ export default function SignUp () {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
-                                onChange={(e) => { editPassword(e.target.value) }}
+
                             />
                         </Grid>
                     </Grid>
                     <Button
-                        type="button"
+                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        onClick={() => signIn()}
+                        // onClick={() => signIn()}
                     >
                         Sign Up
                     </Button>

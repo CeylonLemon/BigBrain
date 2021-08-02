@@ -1,7 +1,5 @@
-import React, { useRef } from 'react';
-import RootRef from '@material-ui/core/RootRef';
+import React, { createRef, useContext, useEffect, useRef, useReducer } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
@@ -10,23 +8,20 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import MainPanel from './MainPanel'
-// import SubPanel from './SubPanel';
-import './App.css'
-import { ACTIONS } from '../helper/UserContext';
-import SubPanelWrapper from './subPanelWrapper';
-import BoilerPlate from './BoilerPlate';
-// import { BrowserRouter as Router,Route } from 'react-router-dom';
-
-// import { UserContext } from '../helper/UserContext';
-// import SimpleDialogDemo from './Dialog';
+import { ACTIONS, UserContext } from '../helper/UserContext';
+import { useHistory, useLocation } from 'react-router-dom';
+import CircularIntegration from './CircularIntegration';
+import { updateQuiz } from '../helper/api';
+import QuestionEditor from './QuestionEditor';
+import GameEditor from './GameEditor';
+import { Question } from './game';
 
 const styles = (theme) => ({
 
   root: {
     '&': {
       margin: 0,
-      padding: theme.spacing(1),
+      padding: theme.spacing(1, 1, 1, 2),
     },
     '& > button': {
       top: '2px'
@@ -46,27 +41,27 @@ const styles = (theme) => ({
 
 const DialogTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
+
   return (
-        <MuiDialogTitle disableTypography className={classes.root} {...other}>
-            <Typography variant="h6">{children}</Typography>
-            {onClose
-              ? (
+      <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <Typography variant="h6">{children}</Typography>
+        {onClose
+          ? (
                 <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
-                    <CloseIcon />
+                  <CloseIcon />
                 </IconButton>
-                )
-              : null}
-        </MuiDialogTitle>
+            )
+          : null}
+      </MuiDialogTitle>
   );
 });
 
 const DialogContent = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(2),
-    display: 'flex',
+    padding: theme.spacing(1, 2, 1, 2),
     height: '150vh',
-    width: '100vh',
-    justifyContent: 'space-around'
+    width: '100%',
+    boxSizing: 'border-box',
   },
 }))(MuiDialogContent);
 
@@ -75,70 +70,190 @@ const DialogActions = withStyles((theme) => ({
     '&': {
       margin: 0,
       padding: theme.spacing(0),
+      height: '45px',
+      justifyContent: 'flex-start'
     }
 
   },
 }))(MuiDialogActions);
 
-const handleSave = () => {
-  // get new information
-  // update state
+const switchQuestionInRefs = (refs, prevIndex, index) => {
+  refs[prevIndex].current.style.display = 'none'
+  refs[index].current.style.display = ''
 }
 
-function Popup ({ game, open, dispatchStates, dispatch, dispatchAlert }) {
-  // const { games, editing } = useContext(UserContext)
-  // const label = useRef(null)
-  // const [open, setOpen] = useState(false)
+const GAME_ACTION = {
+  ADD_QUESTION: 'add-question',
+  DELETE_QUESTION: 'delete-question',
+  SWITCH_QUESTION: 'switch-question'
+}
+
+function Popup ({ mediaSize }) {
   console.log('popup render')
+  const { gamesState, dispatchGamesState } = useContext(UserContext)
+  const location = useLocation()
+  const index = location.state ? location.state.index : 0
+  const game = gamesState.games[index]
+  const { name, thumbnail, questions } = game
+  const history = useHistory()
+  const gameEditorRef = useRef();
+
+  const gameStateReducer = (prevState, action) => {
+    switch (action.type) {
+      case GAME_ACTION.ADD_QUESTION:
+        return {
+          questions: [...prevState.questions, new Question()],
+          currentQuestion: prevState.currentQuestion,
+          editorRefs: [...prevState.editorRefs, createRef()],
+          editorSwitchRefs: [...prevState.editorSwitchRefs, createRef()],
+        }
+      case GAME_ACTION.DELETE_QUESTION:
+
+        if (prevState.questions.length === 1) {
+          alert('at least one question required!')
+          break
+        } else {
+          if (prevState.currentQuestion === prevState.questions.length - 1) {
+            switchQuestionInRefs(prevState.editorSwitchRefs, prevState.currentQuestion, 0)
+          }
+          return {
+            currentQuestion: prevState.currentQuestion === prevState.questions.length - 1
+              ? prevState.currentQuestion - 1
+              : prevState.currentQuestion,
+            questions: prevState.questions.filter((q, index) => {
+              return index !== action.payload.index
+            }),
+
+            editorRefs: prevState.editorRefs.filter((q, index) => {
+              return index !== action.payload.index
+            }),
+            editorSwitchRefs: prevState.editorSwitchRefs.filter((q, index) => {
+              return index !== action.payload.index
+            }),
+          }
+        }
+      case GAME_ACTION.SWITCH_QUESTION:
+        switchQuestionInRefs(prevState.editorSwitchRefs, prevState.currentQuestion, action.payload.page - 1)
+        return {
+          ...prevState,
+          currentQuestion: action.payload.page - 1,
+        }
+    }
+  }
+
+  const [gameState, dispatchGameState] = useReducer(gameStateReducer, {
+    questions,
+    currentQuestion: 0,
+    editorRefs: Array(questions.length).fill('').map(ref => createRef()),
+    editorSwitchRefs: Array(questions.length).fill('').map(ref => createRef())
+  })
+  console.log(questions)
   const handleClose = () => {
-    dispatchStates({
-      type: ACTIONS.CLOSE_POPUP
+    history.push({ pathname: '/home', state: { index } })
+  }
+
+  const handleSave = (loading, setLoading, setSuccess) => {
+    if (loading) { return }
+    const gameInfo = gameEditorRef.current.getGameInfo()
+    const questions = gameState.editorRefs.map(ref => {
+      return ref.current.getQuestionInfo()
     })
-  };
-  const label = useRef()
+    const newGame = { ...gameInfo, questions }
+    updateQuiz(game.id, newGame)
+      .then(data => {
+        dispatchGamesState({
+          type: ACTIONS.MODIFY_GAME,
+          payload: {
+            newGame: Object.assign(game, newGame),
+            id: index
+          }
+        })
+        setLoading(false)
+        setSuccess(true)
+      })
+  }
+
+  const editorSwitch = (e, page) => {
+    dispatchGameState({
+      type: GAME_ACTION.SWITCH_QUESTION,
+      payload: {
+        page
+      }
+    })
+  }
+  const addQuestion = () => {
+    dispatchGameState({
+      type: GAME_ACTION.ADD_QUESTION
+    })
+  }
+
+  const deleteQuestion = (index) => {
+    return () => {
+      dispatchGameState({
+        type: GAME_ACTION.DELETE_QUESTION,
+        payload: { index }
+      })
+    }
+  }
+
+  useEffect(() => {
+    editorSwitch(null, 1)
+  }, [])
+
   return (
-      <RootRef rootRef={label}>
-            <Dialog
-                onClose={handleClose}
-                open={open}
-                maxWidth={'md'}
-                fullWidth={false}
-                disablePortal={true}
-            >
-                <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-                    Modal title
-                </DialogTitle>
-                <DialogContent dividers>
+      <Dialog
+          onClose={handleClose}
+          open={true}
+          maxWidth={'md'}
+          fullWidth={false}
+          disablePortal={true}
+      >
+        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+          ID:{game.id}
+        </DialogTitle>
+        <DialogContent dividers>
+          <GameEditor
+              ref={gameEditorRef}
+              gameName={name}
+              gameThumbnail={thumbnail}
+              numberOfQuestions={gameState.questions.length}
+              mediaSize={mediaSize}
+              editorSwitch={editorSwitch}
+              addQuestion={addQuestion}
+              currentQuestion={gameState.currentQuestion}
+          />
+          {gameState.editorRefs.map((ref, index) => (
+              <div ref={gameState.editorSwitchRefs[index]} key={gameState.questions[index].id} style={{ display: 'none' }} >
+                <QuestionEditor
+                    question={gameState.questions[index]}
+                    editorSwitch={editorSwitch}
+                    ref={ref}
+                    deleteQuestion={deleteQuestion(index)}
+                />
+              </div>
+          ))
 
-                        <MainPanel game={game}
-                                   key='mainPanel'
-                                   dispatch={dispatch}
-                                   dispatchAlert={dispatchAlert}
-                                   />
-                                   <SubPanelWrapper key='subPanel' game={game}/>
-                                   <BoilerPlate key='boilerPlate' prop={1}/>
-                        {/* <SubPanel game={game} dispatchStates={dispatchStates} QIndex={QIndex}/> */}
+          }
 
-                </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={handleSave} color="primary">
-                        Save changes
-                    </Button>
-                </DialogActions>
-            </Dialog>
-      </RootRef>
+        </DialogContent>
+
+        <DialogActions>
+          <CircularIntegration handleButtonClick={handleSave}/>
+        </DialogActions>
+      </Dialog>
   );
 }
 Popup.propTypes = {
   props: PropTypes.object,
+  mediaSize: PropTypes.string,
   open: PropTypes.bool,
   setOpen: PropTypes.func,
   game: PropTypes.object,
   editing: PropTypes.any,
-  dispatch: PropTypes.func,
+  dispatchGames: PropTypes.func,
   alert: PropTypes.object,
   dispatchAlert: PropTypes.func,
-  dispatchStates: PropTypes.func,
+  dispatchControl: PropTypes.func,
   QIndex: PropTypes.number
 }
 export default React.memo(Popup);

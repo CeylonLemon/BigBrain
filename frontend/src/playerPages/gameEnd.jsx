@@ -1,5 +1,4 @@
 import React from 'react';
-// import { getResult } from '../helper/request';
 import { useLocation } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 

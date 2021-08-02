@@ -1,11 +1,9 @@
 import React, { useContext } from 'react';
-// import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { ACTIONS, AlertContext } from '../helper/UserContext';
-// import Popup from './Popup';
 
 function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -13,6 +11,9 @@ function Alert (props) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    position: 'absolute',
+    top: '8%',
+    left: '48%',
     width: '100%',
     '& > * + *': {
       marginTop: theme.spacing(2),
@@ -50,8 +51,8 @@ export default function Snackbars () {
             {/* <Button variant="outlined" onClick={handleClick}> */}
             {/*    Open success snackbar */}
             {/* </Button> */}
-            <Snackbar open={alert.open} autoHideDuration={3000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity={alert.type}>
+            <Snackbar open={alert.open} autoHideDuration={3000} onClose={handleClose} >
+                <Alert onClose={handleClose} severity={alert.type} >
                     {alert.message}
                 </Alert>
             </Snackbar>

@@ -8,6 +8,7 @@ import { InputError, AccessError, } from './error';
 import swaggerDocument from '../swagger.json';
 import {
   getEmailFromAuthorization,
+  sessions,
   login,
   logout,
   register,
@@ -30,6 +31,8 @@ import {
   getQuestion,
   getAnswers,
   hasStarted,
+  getActiveSessionIdFromQuizId,
+  getActiveSessionFromQuizIdThrow, quizzes
 } from './service';
 
 const app = express();
@@ -103,6 +106,7 @@ app.put('/admin/quiz/:quizid', catchErrors(authed(async (req, res, email) => {
   const { questions, name, thumbnail, } = req.body;
   await assertOwnsQuiz(email, quizid);
   await updateQuiz(quizid, questions, name, thumbnail);
+  console.log('quiz update')
   return res.status(200).send({});
 })));
 
@@ -116,21 +120,27 @@ app.delete('/admin/quiz/:quizid', catchErrors(authed(async (req, res, email) => 
 app.post('/admin/quiz/:quizid/start', catchErrors(authed(async (req, res, email) => {
   const { quizid, } = req.params;
   await assertOwnsQuiz(email, quizid);
-  await startQuiz(quizid);
+  const id = await startQuiz(quizid);
+
+  io.to(id).emit('game start')
   return res.status(200).json({});
 })));
 
 app.post('/admin/quiz/:quizid/advance', catchErrors(authed(async (req, res, email) => {
   const { quizid, } = req.params;
   await assertOwnsQuiz(email, quizid);
-  const stage = await advanceQuiz(quizid);
+  console.log('before pass',io)
+  const stage = await advanceQuiz(quizid,io);
   return res.status(200).json({ stage, });
 })));
 
 app.post('/admin/quiz/:quizid/end', catchErrors(authed(async (req, res, email) => {
   const { quizid, } = req.params;
+  const session = getActiveSessionFromQuizIdThrow(quizid);
+  const sessionId = getActiveSessionIdFromQuizId(quizid)
   await assertOwnsQuiz(email, quizid);
   await endQuiz(quizid);
+  io.to(String(sessionId)).emit('end game',session.position)
   return res.status(200).send({});
 })));
 
@@ -154,7 +164,10 @@ app.post('/play/join/:sessionid', catchErrors(async (req, res) => {
   const { sessionid, } = req.params;
   const { name, } = req.body;
   const playerId = await playerJoin(name, sessionid);
-  return res.status(200).send({ playerId, });
+  const numOfQuestions = sessions[sessionid].questions.length
+  console.log('join this sid ',sessionid,name)
+  io.to(sessionid).emit('join game', name)
+  return res.status(200).send({ playerId, numOfQuestions});
 }));
 
 app.get('/play/:playerid/status', catchErrors(async (req, res) => {
@@ -175,6 +188,7 @@ app.get('/play/:playerid/answer', catchErrors(async (req, res) => {
 app.put('/play/:playerid/answer', catchErrors(async (req, res) => {
   const { playerid, } = req.params;
   const { answerIds, } = req.body;
+  console.log(req)
   await submitAnswers(playerid, answerIds);
   return res.status(200).send({});
 }));
@@ -199,5 +213,34 @@ const server = app.listen(port, () => {
   console.log(`Backend is now listening on port ${port}!`);
   console.log(`For API docs, navigate to http://localhost:${port}`);
 });
+
+// const {Server} = require("socket.io")
+
+//const io = new Server(server)
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  }
+});
+io.on('connection',(socket)=>{
+  const {pin,role} = socket.handshake.query
+  console.log(socket)
+  socket.join(pin)
+  const numOfQuestions = sessions[pin].questions.length
+  console.log(numOfQuestions)
+  // const numOfQuestions = quizzes[quizId].questions.length
+  if(role==='host'){
+    // socket.on('join game',(name)=>{
+    //   socket.emit('add player', name)
+    // })
+  }else{
+    socket.emit('number of questions', numOfQuestions)
+    socket.on('advance game',()=>{
+    })
+  }
+
+  console.log(`a user connected, it's a ${socket.handshake.query.role}`)
+  if(socket.handshake.query.name){console.log(`it's name is ${socket.handshake.query.name}`)}
+})
 
 export default server;

@@ -1,12 +1,12 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
-      marginTop: theme.spacing(0),
-
+      margin: '0 auto'
     },
     '& > ul': {
       justifyContent: 'center'
@@ -14,12 +14,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PaginationLink () {
+export default function PaginationLink ({ handleChange, pages }) {
   const classes = useStyles();
 
   return (
         <div className={classes.root}>
-            <Pagination count={10} variant="outlined" shape="rounded" className={classes.root} size={'small'} />
+            <Pagination
+                count={pages}
+                variant="outlined"
+                shape="rounded"
+                className={classes.root}
+                size={'small'}
+                onChange={handleChange}
+            />
         </div>
   );
+}
+PaginationLink.propTypes = {
+  handleChange: PropTypes.func,
+  pages: PropTypes.number,
+  currentPage: PropTypes.number
 }

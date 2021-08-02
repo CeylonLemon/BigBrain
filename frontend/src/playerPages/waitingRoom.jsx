@@ -1,34 +1,70 @@
-import React, { useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom'
-import { CopyButton } from '../helper/copyButton.js';
-import { sendRequest } from '../helper/api';
-import { sleep } from '../helper/helper';
+import React, { useContext, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom'
+import { getCurrentQuestion, ADDRESS } from '../helper/api';
+import Typography from '@material-ui/core/Typography';
+import { Box } from '@material-ui/core';
+import { Copy } from '../object/icons';
+import { copyLink } from '../helper/helper';
+import { AlertContext, ACTIONS } from '../helper/UserContext';
 
 export function WaitingRoom () {
-  const { sessionId } = useParams();
-  const { playerId } = useParams();
+  const location = useLocation()
+  const queryString = require('query-string');
+  console.log(queryString.parse(location.search))
+  const { pin, pid, name, numOfQuestions } = queryString.parse(location.search);
   const history = useHistory();
-  const [started, setStarted] = React.useState(false)
+  const { dispatchAlert } = useContext(AlertContext)
+  console.log('waiting room render!')
+  console.log(numOfQuestions)
 
   useEffect(() => {
-    async function checkIfStart () {
-      let started = false
-      while (!started) {
-        await sendRequest('play/' + playerId + '/status', false, 'GET', false)
-          .then(data => {
-            started = data.started;
-          }).then(await sleep(500))
-      }
-      history.push('/gaming/' + playerId);
-      setStarted(true);
-    }
-    if (!started) { checkIfStart(); }
+    const io = require('socket.io-client')
+    const socket = io(ADDRESS, { query: { pin, role: 'player', name } });
+    socket.emit('join game', name)
+    socket.on('advance game', async () => {
+      const returnData = await getCurrentQuestion(pid)
+      socket.close()
+      console.log(numOfQuestions)
+      history.push({
+        pathname: '/gaming/',
+        search: `?pin=${pin}&pid=${pid}&name=${name}`,
+        state: { question: returnData.question, numOfQuestions }
+      });
+    })
   }, [])
 
-  return <> <h2>Waiting for host to start game...</h2>
-    <div>SessionID: {sessionId}</div>
-    <div>playerId: {playerId}</div>
-    <div>Invite other player to join in</div>
-    <CopyButton text={'localhost:3000/joinGame/' + sessionId}/>
-    </>
+  return (
+  <Box style={{
+    marginTop: '150px',
+    textAlign: 'center',
+    height: '400px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around'
+  }}>
+    <Typography gutterBottom variant="h2" component="h1">
+      Waiting for hoster to start game
+    </Typography>
+    <Typography gutterBottom variant="h4" component="h1">
+      SessionID: {pin}
+    </Typography>
+    <Typography gutterBottom variant="h4" component="h1">
+      playerId: {pid}
+    </Typography>
+    <Typography gutterBottom variant="h4" component="h1">
+      Invite other player to join in<Copy
+        handleClick={() => {
+          copyLink(pin)
+          dispatchAlert({
+            type: ACTIONS.OPEN_ALERT,
+            payload: {
+              type: 'success',
+              message: 'link has been copied'
+            }
+          })
+        }}
+        style={{ position: 'relative', height: '3.5vh', width: '30px', top: '3px', left: '3vh' }}/>
+    </Typography>
+  </Box>
+  );
 }

@@ -1,4 +1,5 @@
 import { BlankPic } from '../helper/UserContext';
+import { uuid } from './helpers';
 export class Game {
   constructor () {
     this.name = 'A new quiz'
@@ -26,13 +27,14 @@ export class Game {
 }
 export class Question {
   constructor () {
+    this.id = uuid()
     this.title = 'question'
     this.duration = 5
     this.options = ['A', 'B']
     this.answers = ['A']
     this.points = 5
     this.thumbnail = BlankPic
-    this.type = 'Single Selection'
+    this.type = 'Single'
   }
 
   // function wrapQuestion () {

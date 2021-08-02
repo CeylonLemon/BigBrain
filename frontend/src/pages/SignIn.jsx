@@ -1,4 +1,3 @@
-// import React from 'react';
 import React, { useContext, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -13,9 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { useHistory, useLocation } from 'react-router-dom';
-// import { UserContext } from '../helper/UserContext';
-import { sendRequest } from '../helper/api';
+import { useHistory, Redirect } from 'react-router-dom';
+import { signInRequest } from '../helper/api';
 import { UserContext } from '../helper/UserContext';
 
 function Copyright () {
@@ -52,23 +50,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn () {
-  // const { setToken, password, email, editEmail, editPassword } = useContext(UserContext);
   const [email, editEmail] = useState('')
   const [password, editPassword] = useState('')
-  const { setToken } = useContext(UserContext)
+  const { setHaveToken } = useContext(UserContext)
   const classes = useStyles();
-  const query = useLocation().search
+  // const query = useLocation().search
   const history = useHistory();
-  function signIn () {
-    const Data = {
-      email: email,
-      password: password,
-    };
-    sendRequest('admin/auth/login', Data, 'POST', false)
+  function signIn (e) {
+    e.preventDefault()
+    signInRequest(email, password)
       .then(data => {
-        // setToken(data.token);
+        console.log(data.token)
         sessionStorage.setItem('token', data.token)
-        setToken(data.token)
+        sessionStorage.setItem('email', email)
+        setHaveToken(true)
         history.push('/home');
       })
       .catch(e => { alert(e) })
@@ -76,8 +71,8 @@ export default function SignIn () {
     return false
   }
 
-  return ((query)
-    ? <></>
+  return (sessionStorage.getItem('token')
+    ? <Redirect to={'/home'}/>
     : <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <div className={classes.paper}>
@@ -87,7 +82,7 @@ export default function SignIn () {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <form className={classes.form} noValidate >
+                    <form className={classes.form} noValidate onSubmit={signIn} >
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -124,12 +119,13 @@ export default function SignIn () {
                             label="Remember me"
                         />
                         <Button
-                            type="button"
+                            type="submit"
                             fullWidth
                             variant="contained"
                             color="primary"
                             className={classes.submit}
-                            onClick={() => { signIn() }}
+                            name='login'
+                            // onClick={() => { signIn() }}
                         >
                             Sign In
                         </Button>

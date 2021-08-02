@@ -1,40 +1,30 @@
+import { ADDRESS } from '../helper/api';
 
-// export addListener()
-
-// export class Listener extends IdDom{
-//     constructor(eventType,callBack) {
-//         super();
-//         this.eventType = eventType
-//         this.callBack = callBack
-//     }
-//     addListener(){
-//         this.dom.addEventListener(this.eventType,this.callBack)
-//     }
-// }
-export class IdDom {
-  constructor (arg) {
-    const type = Object.prototype.toString.call(arg)
-    console.log(type)
-    if (type === '[object string]') {
-      this.dom = document.getElementById(arg)
-    } else if (type === '[object HTMLDivElement]') {
-      this.dom = arg
-    } else {
-      throw new TypeError('wrong type')
-    }
-  }
-
-  addListener ({ eventType, callBack, capture = false }) {
-    this.dom.addEventListener(eventType, callBack, capture)
-  }
-
-  clearListener (event, callBack) {
-    this.dom.removeEventListener(event, callBack)
+export function debounce (fn, delay) {
+  let timer = null
+  return function () {
+    const context = this
+    const args = [...arguments];
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      fn.apply(context, args)
+    }, delay)
   }
 }
 
-export const getValueById = (id) => {
-  console.log(id)
-  console.log(document.getElementById(id))
-  return document.getElementById(id).value
+export function uuid () {
+  const tempUrl = URL.createObjectURL(new Blob());
+  const uuid = tempUrl.toString(); // blob:https://xxx.com/b250d159-e1b6-4a87-9002-885d90033be3
+  URL.revokeObjectURL(tempUrl);
+  return uuid.substr(uuid.lastIndexOf('/') + 1);
+}
+
+export const findGameById = (games, gid) => {
+  console.log('fgbid', games.find(game => game.id === gid), typeof games[0].id)
+  return games.find(game => game.id === gid)
+}
+
+export const connectToServer = (socketRef, body) => {
+  const io = require('socket.io-client')
+  socketRef.current = io(ADDRESS, body)
 }

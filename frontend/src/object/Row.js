@@ -1,22 +1,37 @@
 import { Delete, Edit, Play } from './icons';
-import React, { useState, useContext } from 'react';
+import React, { useState, Fragment } from 'react';
 import CircularIndeterminate from './Circle';
 import PropTypes from 'prop-types';
-// import Popup from './Popup';
 import { turn } from './Table';
-import { deleteQuiz } from '../helper/request';
-import { ACTIONS, UserContext, ControlContext } from '../helper/UserContext';
+import { deleteQuiz, endGame, getQuiz, startGame } from '../helper/api';
+import { ACTIONS } from '../helper/UserContext';
+import { useHistory } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import ButtonMenu from './BottonMenu';
 const token = sessionStorage.getItem('token')
-function Row ({ row }) {
-  // console.log(row, ' render!')
-  // console.log(row[0] === 'Name')
-  const [Deleting, setDeleting] = useState(false)
-  const { dispatchStates } = useContext(ControlContext)
-  // console.log(game)
-  // console.log(game, game.id)
-  // const row = game.id ? [game.id, game.name, game.questions.length, game.calcTime(), 'button'] : row
+const useStyles = makeStyles((theme) => ({
+  row: {
+    transition: '0.5s',
+  },
+  '& :not(:first-child):hover': {
+    backgroundColor: 'lightcyan'
+  },
+  lastCell: {
+    transition: '0.2s',
+    '& > *:hover': {
+      transform: 'scale(1.2)'
+    }
+  },
+  buttonMenu: {
+    width: '10px'
+  }
 
-  const { dispatch } = useContext(UserContext)
+}))
+function Row ({ row, dispatchGames, index, mediaSize }) {
+  const [Deleting, setDeleting] = useState(false)
+  const history = useHistory()
+  const classes = useStyles()
   const Styles = () => {
     const rowStyle = {
       padding: '1vh',
@@ -24,7 +39,7 @@ function Row ({ row }) {
       alignItems: 'center',
       display: 'flex',
       justifyContent: 'space-around',
-      margin: '2vh'
+      margin: '2vh 2vh 0 2vh'
     }
     const cellStyle = {
       verticalAlign: 'center',
@@ -41,6 +56,7 @@ function Row ({ row }) {
       row: rowStyle,
       headerRow: { ...rowStyle, fontWeight: 'bold', fontSize: '1.5em' },
       cell: cellStyle,
+      numberCell: { ...cellStyle, textAlign: 'center' },
       lastCellStyle: { ...cellStyle, width: '30%' },
       deleteIconStyle: iconStyle,
       editIconStyle: iconStyle,
@@ -49,83 +65,139 @@ function Row ({ row }) {
     }
   }
   const styles = Styles()
+  const handleControl = (index, id) => {
+    return (e) => {
+      e.stopPropagation()
+      history.push({
+        pathname: '/home/editGames',
+        search: `?id=${id}`,
+        state: {
+          index: index
+        }
+      })
+    }
+  }
 
-  const handleEdit = () => {
-    dispatchStates({
-      type: ACTIONS.OPEN_POPUP,
-      payload: {
-        id: row[0]
-      }
-    })
+  const handlePlay = () => {
+    startGame(row[0])
+      .then(data => { return getQuiz(row[0]) })
+      .then(data => {
+        history.push({
+          pathname: '/waitForPlayers',
+          search: `?gid=${row[0]}&pin=${data.active}`,
+          state: {
+            index: index
+          }
+        })
+      })
+      .catch(e => {
+        alert(e);
+        endGame(row[0])
+          .then(handlePlay)
+      })
+
+    // const returnData = await getQuiz(row[0]).catch(e => alert(e))
+    // history.push({
+    //   pathname: '/waitForPlayers',
+    //   search: `?gid=${row[0]}&pin=${returnData.active}`,
+    //   state: {
+    //     index: index
+    //   }
+    // })
   }
 
   const handleDelete = () => {
     setDeleting(true)
     deleteQuiz(row[0], token)
-      .then(dispatch({ type: ACTIONS.DELETE_GAME, payload: { id: row[0] } }))
+      .then(dispatchGames({ type: ACTIONS.DELETE_GAME, payload: { id: row[0] } }))
   }
 
-  // const handlePlay(){
-  //
-  // }
-
   return (
-        <div
-            id = {row[0] === 'Name' ? 'tableHeader' : 'row'}
-            style={row[0] === 'Name' ? styles.headerRow : styles.row}
-            className="row"
-            data-selected = "off"
-            onClick={(e) => {
-              e.stopPropagation()
-              const state = e.currentTarget.dataset.selected
-              turn[state](e.currentTarget)
-            }}
-        >
-            {row.map((ele, i) =>
-              i === row.length - 1
-                ? row[0] === 'ID'
-                    ? <div
-                            style={styles.lastCellStyle}
-                            key={row[0] + i}
-                        >
-                            {ele}
-                        </div>
-
-                    : <div
-                            style={{ ...styles.lastCellStyle, display: 'flex' }}
-                            key={row[0] + i}
-                        >
-
-                            <Play
-                                style={styles.playIconStyle}
-                                // handlePlay ={handlePlay}
-                            />
-                             <Edit style={styles.editIconStyle} handleEdit={handleEdit} />
-                            {Deleting
-                              ? <CircularIndeterminate
-                                    style={styles.deleteIconStyle}/>
-                              : <Delete
-                                    style={styles.deleteIconStyle}
-                                    handleDelete = {handleDelete}
-                                />}
-
-                        </div>
-
-                : <div style={styles.cell}
-                             key={row[0] + i}
-                        >
-                            {ele}
-                        </div>
-
-            )}
-        </div>
+      <div
+          id = {row[0] === 'Name' ? 'tableHeader' : 'row'}
+          style={row[0] === 'Name' ? styles.headerRow : styles.row}
+          className={classes.row}
+          data-selected = "off"
+          onClick={(e) => {
+            e.stopPropagation()
+            const state = e.currentTarget.dataset.selected
+            turn[state](e.currentTarget)
+          }}
+      >
+        <Fragment>
+          {row[0] === 'ID'
+            ? <Fragment>
+                <div style={styles.cell} >
+                  {row[0]}
+                </div>
+                <div style={styles.cell} >
+                  {row[1]}
+                </div>
+                <div style={styles.numberCell}>
+                  {row[2]}
+                </div>
+                <div style={styles.numberCell}>
+                  {row[3]}
+                </div>
+                {mediaSize === 'small'
+                  ? <div>&nbsp;</div>
+                  : <div style={styles.cell}>
+                      {row[4]}
+                    </div>}
+              </Fragment>
+            : <Fragment>
+                <div style={styles.cell} >
+                  {row[0]}
+                </div>
+                <div style={styles.cell} >
+                  {row[1]}
+                </div>
+                <div style={styles.numberCell}>
+                  {row[2]}
+                </div>
+                <div style={styles.numberCell} >
+                  {row[3]}
+                </div>
+                {mediaSize === 'small'
+                  ? <span className={classes.buttonMenu}>
+                      <ButtonMenu
+                          handleClickLists={{
+                            Play: handlePlay,
+                            Edit: handleControl(index, row[0]),
+                            Delete: handleDelete
+                          }}
+                      />
+                    </span>
+                  : <Box
+                        className={classes.lastCell}
+                        style={{ ...styles.lastCellStyle, display: 'flex' }}
+                        key={row[4] + 4}
+                    >
+                      <Play style={styles.playIconStyle} handlePlay={handlePlay}/>
+                      <Edit style={styles.editIconStyle} handleEdit={handleControl(index, row[0])} />
+                      {Deleting
+                        ? <CircularIndeterminate
+                              style={styles.deleteIconStyle}/>
+                        : <Delete
+                              style={styles.deleteIconStyle}
+                              handleDelete = {handleDelete}
+                          />}
+                    </Box>}
+              </Fragment>
+          }
+        </Fragment>
+      </div>
   );
 }
 Row.propTypes = {
+  mediaSize: PropTypes.string,
   style: PropTypes.object,
   row: PropTypes.array,
   handleDelete: PropTypes.func,
-  game: PropTypes.object
+  game: PropTypes.object,
+  handleControl: PropTypes.func,
+  dispatchGames: PropTypes.func,
+  index: PropTypes.any
 }
 
 export default React.memo(Row)

@@ -1,131 +1,53 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom';
-import { sendRequest } from '../helper/api';
-import { UserContext } from '../helper/UserContext';
-// import { Question } from '../object/question';
-import { CountDownTimer } from '../object/countDownTimer';
-// import { sleep } from '../helper/helper';
-import Avatar from '@material-ui/core/Avatar';
-
+import React, { useRef, useEffect } from 'react'
+import { useLocation, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-// import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
-import Option from '../object/Option';
-import { BlankPic } from '../helper/helper';
-const useStyles = makeStyles({
+import QuizBoard from '../object/QuizBoard';
+import { connectToServer } from '../object/helpers';
+
+const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
-  },
-});
-
-export function StartGame () {
-  // const { stage } = useParams();
-  const { token } = useContext(UserContext);
-  const history = useHistory();
-  const game = useLocation().state.game;
-  const qs = game.questions;
-
-  const [stage, setStage] = useState(0);
-  // const question = qs[stage]
-  const [timeLeft, setTimeLeft] = useState(qs[stage].limit)
-  const [finished, setFinished] = useState(false)
-  const [selected, setSelected] = useState(Array.from({
-    length: qs[stage].options.length
-  }).map(x => false))
-  const classes = useStyles();
-  useEffect(() => {
-    setTimeLeft(qs[stage].limit)
-  }, [stage])
-
-  console.log(selected)
-  const optionsStyle = {
-    boxSizing: 'border-box',
-    display: 'grid',
-    gridTemplateColumns: 'auto auto',
-    padding: '10px',
-    columnGap: '10px',
-  }
-
-  const mainStyle = {
-    borderRadius: '10px',
-    border: '2px solid grey',
-    position: 'fixed',
-    height: '80%',
+    marginTop: '8vh',
+    height: '90vh',
+    width: '100vh',
+    position: 'absolute',
     top: '50%',
     left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '63%'
+    transform: 'translate(-50%,-50%)'
   }
+}))
+// const connectToServer = (socketRef, body) => {
+//   const io = require('socket.io-client')
+//   socketRef.current = io('http://localhost:5005', body)
+// }
 
-  function advanceGame () {
-    // if not reach the last question, jump to next question
-    if (stage < game.questions.length - 1) {
-      sendRequest('admin/quiz/' + game.id + '/advance', false, 'POST', token)
-        .then(async data => {
-          setStage(data.stage)
-          setFinished(false)
-        });
-      // if reach the end, stop this game
-    } else {
-      sendRequest('admin/quiz/' + game.id + '/end', false, 'POST', token)
-        .then(data => {
-          history.push('/home');
-        });
-    }
-  }
+export function StartGame () {
+  const classes = useStyles()
+  const location = useLocation();
+  const history = useHistory()
+  const queryString = require('query-string');
+  const { gid, pin } = queryString.parse(location.search)
+  const socket = useRef();
+  const quizBoardRef = useRef()
 
-  function endGame () {
-    sendRequest('admin/quiz/' + game.id + '/end', false, 'POST', token)
-      .then(() => {
-        history.push('/home')
-      })
-  }
+  useEffect(() => {
+    connectToServer(socket, { query: { pin, role: 'host' } })
 
-  return <div style={mainStyle}>
+    socket.current.on('end game', () => {
+      socket.current.close()
+      history.push('/endOfGame')
+    })
+    socket.current.on('advance game', state => {
+      quizBoardRef.current.hostAdvanceGame()
+    })
+  }, [])
 
-          <div style={{
-            boxSizing: 'border-box',
-            textAlign: 'center',
-            width: '420px',
-            height: '320px',
-            borderRadius: '15px',
-            padding: '15px 0 0 0',
-            margin: '0 0 0 15px'
-          }}>
-              <img src={BlankPic} style={{ width: '95%', height: '95%' }}/>
-          </div>
+  return <div className={classes.root} id='boardWrapper'>
 
-          <div style={optionsStyle}>
-              {qs[stage].options.map((o, i) =>
-                  <Option o={o} key={i}
-                          index = {i}
-                          setSelected={setSelected}
-                          selected={selected}
-                  />
-              )}
-          </div>
-          <CardActions>
-              <Avatar aria-label="recipe" className={classes.avatar}>
-                  <CountDownTimer stage={stage} setFinished={setFinished} tl={timeLeft}/>
-              </Avatar>
+            <QuizBoard
+                ref={quizBoardRef}
+                gid={parseInt(gid)}
+                pin={pin}
+            />
 
-              <Button size="medium" color="primary">
-                  Share
-              </Button>
-              <Button size="medium" color="primary" onClick={() => { endGame(); }}>
-                  STOP
-              </Button>
-              {(finished)
-                ? <Button
-                      onClick={() => {
-                        advanceGame();
-                      }}
-                      size="medium"
-                      color="primary"
-                  >Advance</Button>
-                : undefined
-              }
-          </CardActions>
     </div>
 }

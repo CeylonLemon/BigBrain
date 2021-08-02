@@ -15,6 +15,10 @@ const PurpleSwitch = withStyles({
       backgroundColor: purple[500],
     },
   },
+  wrapper: {
+    marginTop: '2vh',
+    padding: '0 0 1vh 3vh'
+  },
   checked: {},
   track: {},
 })(Switch);
@@ -30,7 +34,10 @@ export default function CustomizedSwitches () {
   };
 
   return (
-        <div style={{ padding: '0 0 1vh 3vh' }}>
+        <div style={{
+          marginTop: '1vh',
+          padding: '0 0 1vh 3vh'
+        }}>
             <FormControlLabel
                 control={<PurpleSwitch
                     checked={state}

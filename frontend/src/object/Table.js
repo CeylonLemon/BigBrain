@@ -1,15 +1,14 @@
-import React from 'react';
-import './App.css';
+import React, { useContext, Fragment } from 'react';
 import Divider from '@material-ui/core/Divider';
 import CustomizedSwitches from './Switch';
-import { ShadowButton } from './Button';
-// import { IdDom } from './helpers';
+import { TableButton } from './Button';
 import Row from './Row.js'
-// import { UserContext } from '../helper/UserContext';
-// import PopupWrapper from './PopupWrapper';
 import PropTypes from 'prop-types';
-// import { BrowserRouter as Router,Route } from 'react-router-dom';
-// import { SmallTextFields } from './TextFiled';
+import { UserContext, ACTIONS } from '../helper/UserContext';
+import { makeStyles } from '@material-ui/core/styles';
+import { addNewQuiz, updateQuiz } from '../helper/api';
+import { Game } from './game';
+import MediaQuery from 'react-responsive';
 
 export const turn = {
   off: (dom) => {
@@ -36,93 +35,106 @@ export const turn = {
   }
 }
 
-export default function Table ({ rows }) {
-  // const { games } = React.useContext(UserContext)
-  //
-  // const headerRow = ['ID', 'TITLE', 'QUESTIONS', 'DURATION', 'BUTTON']
-  // const header = React.useMemo(() => {
-  //   return headerRow
-  // }, [headerRow])
+export default function Table ({ rows, mediaSize }) {
+  console.log(rows)
+  const { dispatchGamesState } = useContext(UserContext)
+  const header = ['ID', 'NAME', 'QUESTIONS', 'DURATION', 'BUTTON']
+  const useStyles = makeStyles((theme) => ({
+    buttons: {
+      margin: '1vh 3vh 0 0',
+      width: '22vh',
+      height: '5vh',
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      fontFamily: 'Oswald'
+    },
+    table: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%,-45%)',
+      boxShadow: '1px 1px 5px black',
+      minWidth: '400px',
+      minHeight: '300px',
+      width: '80%'
+    },
+    content: {
+      maxHeight: '400px',
+      overflow: 'scroll',
+    }
+  }))
+  const classes = useStyles()
 
-  // const headerStyle = React.useMemo(() => { return { margin: '0 2vh 0 2vh' } }, [rows[0]])
-
-  // const [rows, setRows] = React.useState(initRows(games));
-
-  const multiDelete = () => {
-    console.log('multi')
+  const addQuiz = () => {
+    let gameId;
+    addNewQuiz('new Quiz')
+      .then(data => {
+        const id = data.quizId
+        console.log('this is id', id)
+        gameId = id
+        const newQuiz = (({ questions, name, thumbnail }) =>
+          ({ questions, name, thumbnail }))(new Game())
+        console.log('this is data', newQuiz)
+        return updateQuiz(id, newQuiz)
+      })
+      .then(() => {
+        dispatchGamesState({
+          type: ACTIONS.ADD_GAME,
+          payload: { id: gameId }
+        })
+      })
   }
-  const tableStyle = {
-    boxShadow: '1px 1px 5px black',
-    minWidth: '400px',
-    minHeight: '300px',
-    width: '80%'
-  };
-  // const eventCallBack = (e) => {
-  //   e.stopPropagation()
-  //   console.log(this)
-  //   const state = this.dataset.selected
-  //   turn[state](this)
-  // }
-  // React.useEffect(() => {
-  //   setRows(initRows(games))
-  //   const rows = document.getElementsByClassName('row')
-  //
-  //   for (let i = 1; i < rows.length; i++) {
-  //     const dom = new IdDom(rows[i])
-  //     console.log(dom.dom)
-  //     dom.clearListener('click', eventCallBack)
-  //     dom.addListener({
-  //       eventType: 'click',
-  //       callBack: eventCallBack
-  //     })
-  //   }
-  // }, [rows])
+
   return (
-        <div>
-            <div style={tableStyle} className='table'>
-                {/* <Row key={rows[0]} row={header} style={headerStyle}/> */}
-                <Divider variant="middle"/>
+      <Fragment>
+          <header>
+              <Row key="table_header" row={header} mediaSize={mediaSize}/>
+              <Divider variant="middle"/>
+          </header>
+          <div className={classes.content}>
+              <MediaQuery minWidth={ 691 }>
+                  {rows.map((r, i) => (
+                      <Row
+                          index={i}
+                          key={r[0]}
+                          row={r}
+                          dispatchGames={dispatchGamesState}
+                          mediaSize={mediaSize}
+                      />
+                  ))}
+              </MediaQuery>
+              <MediaQuery maxWidth={691}>
+                  {rows.map((r, i) => (
+                      <Row
+                          index={i}
+                          key={r[0]}
+                          row={r}
+                          dispatchGames={dispatchGamesState}
+                          mediaSize={mediaSize}
+                      />
+                  ))}
+              </MediaQuery>
+          </div>
 
-                {rows.map((r) => (
-                    <Row key={r[0]} row={r} />
-                ))}
+          <Divider variant="middle" style={{ marginBottom: '2vh' }}/>
 
-                <Divider variant="middle" style={{ marginBottom: '2vh' }}/>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <CustomizedSwitches/>
-                    <ShadowButton
-                        text={'NEW QUIZ'}
-                        style={{
-                          position: 'relative',
-                          margin: '0 2vh 2vh 0',
-                          border: 'none',
-                          background: 'none',
-                          boxShadow: '0.5px 0.5px 2px black',
-                          left: '3%'
-                        }}
-                        clickHandler={multiDelete}
-                    />
-                    <ShadowButton
-                        text={'DELETE'}
-                        style={{
-                          margin: '0 2vh 2vh 0',
-                          position: 'relative',
-                          right: '10%',
-                          border: 'none',
-                          background: 'none',
-                          boxShadow: '0.5px 0.5px 2px black'
-                        }}
-                        clickHandler={multiDelete}
-                    />
-                </div>
-
-            </div>
-
-        </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <CustomizedSwitches/>
+              <div className={classes.buttons}>
+                  <TableButton variant="outlined" size='small' color="primary" name='addQuizButton' onClick={addQuiz}>
+                      <span style={{ fontFamily: 'Oswald' }}>ADD QUIZ</span>
+                  </TableButton>
+                  <TableButton variant="outlined" size='small' name='deleteQuizButton' color="secondary">
+                      <span style={{ fontFamily: 'Oswald' }}>DELETE</span>
+                  </TableButton>
+              </div>
+          </div>
+      </Fragment>
 
   );
 }
 Table.propTypes = {
   rows: PropTypes.array,
+  mediaSize: PropTypes.string,
 }

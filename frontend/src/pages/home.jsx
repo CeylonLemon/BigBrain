@@ -1,26 +1,25 @@
-import React, { useContext } from 'react';
-// import GameTable from '../object/GameTable';
-// import { UserContext } from '../helper/UserContext';
+import React, { useRef } from 'react';
 import { Container } from '@material-ui/core';
-// import Table from '../object/Table';
-import { UserContext } from '../helper/UserContext';
 import { useHistory } from 'react-router-dom';
 import TableWrapper from '../object/TableWrapper'
 import PopupWrapper from '../object/PopupWrapper';
 
 export function Home () {
-  const { token } = useContext(UserContext);
   const history = useHistory()
-  if (!token) {
+  const bodyRef = useRef()
+  console.log('home render')
+  if (!sessionStorage.getItem('token')) {
     history.push('/signIn')
   }
-  // ('home¡')
-  return <Container style={{ marginTop: '100px' }}>
-        <h2 id='greeting'>Welcome! {name}</h2>
-        <div>
-
-                <TableWrapper/>
-        </div>
-      <PopupWrapper/>
-    </Container>
+  return (
+      <Container ref={bodyRef} style={{ marginTop: '100px' }}>
+          <h2 id='greeting' style={{ paddingLeft: '8%' }}>
+              Welcome! {sessionStorage.getItem('email')}
+          </h2>
+          <div>
+              <TableWrapper bodyRef={bodyRef}/>
+          </div>
+          <PopupWrapper/>
+      </Container>
+  );
 }

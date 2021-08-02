@@ -1,3 +1,5 @@
+import { PRODUCTION_ADDRESS } from './api';
+
 export function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -17,4 +19,14 @@ export function fileToDataUrl (file) {
   });
   reader.readAsDataURL(file);
   return dataUrlPromise;
+}
+
+export const copyLink = (pin) => {
+  console.log('copy')
+  const dummy = document.createElement('input');
+  document.body.appendChild(dummy);
+  dummy.value = `${PRODUCTION_ADDRESS}/joinGame/${pin}`;
+  dummy.select();
+  document.execCommand('copy');
+  document.body.removeChild(dummy);
 }

@@ -1,32 +1,36 @@
 import React from 'react';
-import './App.css';
-import { EditGames } from './pages/editGames';
+// import './App.css';
 import { Home } from './pages/home'
 import { WaitForPin } from './pages/waitForPin';
 import { StartGame } from './pages/startGame';
 import { JoinGame } from './playerPages/joinGame';
-import { Gaming } from './playerPages/gaming';
-import { AlertProvider, ContextProvider, ControlProvider } from './helper/UserContext';
+import Gaming from './playerPages/gaming';
+import { AlertProvider, GamesProvider, MediaProvider } from './helper/UserContext';
 import { WaitForPlayers } from './pages/waitForPlayers';
 import { WaitingRoom } from './playerPages/waitingRoom';
 import { GameEnd } from './playerPages/gameEnd.jsx';
+import EndOfGame from './pages/EndOfGame';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
-import GameTable from './object/GameTable';
 import ButtonAppBar from './object/NavBar';
+import { CacheRoute, CacheSwitch } from 'react-router-cache-route'
 import {
   BrowserRouter as Router,
   Route,
   Redirect
 } from 'react-router-dom';
 import Snackbars from './object/SnackBars';
+// import Snackbars from './object/SnackBars';
 // import StoreProvider from './object/store'
 function App11 () {
-  const token = sessionStorage.getItem('token')
+  // const token = sessionStorage.getItem('token')
+  // const { haveToken } = useContext(UserContext)
   return (
-  <ContextProvider>
-      <ControlProvider>
+      <MediaProvider>
+  <GamesProvider>
+      {/* <ControlProvider> */}
           <AlertProvider>
+              <Snackbars/>
     <Router>
         <nav>
             <ButtonAppBar/>
@@ -40,54 +44,48 @@ function App11 () {
           <Route path="/SignUp">
               <SignUp/>
           </Route>
+            <CacheSwitch>
+                <CacheRoute path="/home" component={Home}/>
+            </CacheSwitch>
 
-            <Route path="/home">
-                 <Home/>
-
-            </Route>
             <Route exact path="/">
-              {token
+              {sessionStorage.getItem('token')
                 ? <Redirect to="/home" />
                 : <Redirect to="/SignIn" />
               }
             </Route>
-              <Route path="/editGames">
-              {token
-                ? <EditGames/>
-                : <Redirect to="/SignIn" />
-              }
-            </Route>
-              <Route path='/waitForPin/:id'>
+              <Route exact path='/waitForPin'>
                 <WaitForPin/>
               </Route>
-              <Route path='/waitForPlayers/:pin'>
+              <Route exact path='/waitForPlayers'>
                   <WaitForPlayers/>
               </Route>
               <Route path='/startGame'>
                   <StartGame/>
               </Route>
-              <Route path='/waitingRoom/:sessionId/:playerId'>
+              <Route exact path='/waitingRoom'>
                   <WaitingRoom/>
               </Route>
               <Route path='/joinGame/:sessionId'>
                   <JoinGame/>
               </Route>
-              <Route path='/gaming/:pid'>
+              <Route exact path='/gaming'>
                   <Gaming/>
               </Route>
+          <Route exact path='/endOfGame'>
+              <EndOfGame/>
+          </Route>
               <Route path='/gameEnd/:pid'>
                   <GameEnd/>
-              </Route>
-              <Route path='/GameTable'>
-                  <GameTable/>
               </Route>
 
       </div>
     </Router>
-          <Snackbars/>
+
           </AlertProvider>
-      </ControlProvider>
-  </ContextProvider>
+      {/* </ControlProvider> */}
+  </GamesProvider>
+      </MediaProvider>
   );
 }
 

@@ -1,25 +1,30 @@
 import React, { useContext } from 'react';
-import { UserContext, ControlContext, AlertContext } from '../helper/UserContext';
+import { UserContext } from '../helper/UserContext';
 import Popup from './Popup';
+import MediaQuery from 'react-responsive/src';
+import {
+  CacheRoute, CacheSwitch,
+} from 'react-router-cache-route';
 
 function PopupWrapper () {
-  const { games, dispatch } = useContext(UserContext)
-  const { states, dispatchStates } = useContext(ControlContext)
-  const { dispatchAlert } = useContext(AlertContext)
-  console.log('popupwrapper render')
-  const game = (() => {
-    for (const g of games) {
-      if (g.id === states.editing) { return g }
-    }
-  })()
+  const { gamesState, gamesIsLoading } = useContext(UserContext)
+  console.log('popupwrapper render', gamesState.games)
+
   return <>
-        <Popup
-            game={game}
-            open={states.open}
-            dispatchStates={dispatchStates}
-            dispatch={dispatch}
-            dispatchAlert = {dispatchAlert}
-        />
-    </>
+    {
+      gamesIsLoading
+        ? undefined
+        : <CacheSwitch>
+            <CacheRoute path="/home/editGames" when="always" multiple>
+              <MediaQuery minWidth={451}>
+                <Popup mediaSize='large'/>
+              </MediaQuery>
+              <MediaQuery maxWidth={450}>
+                <Popup mediaSize='small'/>
+              </MediaQuery>
+            </CacheRoute>
+          </CacheSwitch>
+    }
+  </>
 }
-export default PopupWrapper
+export default React.memo(PopupWrapper)

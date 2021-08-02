@@ -10,7 +10,6 @@ export function CopyButton ({ text }) {
     dummy.select();
     document.execCommand('copy');
     document.body.removeChild(dummy);
-    alert('link copied!')
   }
 
   return <>

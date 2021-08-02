@@ -19,8 +19,8 @@ const DATABASE_FILE = './database.json';
 ***************************************************************/
 
 let admins = {};
-let quizzes = {};
-let sessions = {};
+export let quizzes = {};
+export let sessions = {};
 
 const sessionTimeouts = {};
 
@@ -206,25 +206,29 @@ export const startQuiz = quizId => quizLock((resolve, reject) => {
     sessions[id] = newSessionPayload(quizId);
     resolve(id);
   }
+  return id
 });
 
-export const advanceQuiz = quizId => quizLock((resolve, reject) => {
+export const advanceQuiz = (quizId,io) => quizLock((resolve, reject) => {
   const session = getActiveSessionFromQuizIdThrow(quizId);
+  const sessionId = getActiveSessionIdFromQuizId(quizId)
   if (!session.active) {
     reject(new InputError('Cannot advance a quiz that is not active'));
   } else {
     const totalQuestions = session.questions.length;
-    console.log('advance!',session)
     session.position += 1;
     session.answerAvailable = false;
     session.isoTimeLastQuestionStarted = new Date().toISOString();
     if (session.position >= totalQuestions) {
-      endQuiz(quizId);
+      endQuiz(quizId)
+          .then(io.to(String(sessionId)).emit('end game',session.position))
+
     } else {
       const questionDuration = quizQuestionGetDuration(session.questions[session.position]);
       if (sessionTimeouts[session.id]) {
         clearTimeout(sessionTimeouts[session.id]);
       }
+      io.to(String(sessionId)).emit('advance game',session.position)
       sessionTimeouts[session.id] = setTimeout(() => {
         session.answerAvailable = true;
       }, questionDuration * 1000);
@@ -245,7 +249,7 @@ export const endQuiz = quizId => quizLock((resolve, reject) => {
 
 const quizHasActiveSession = quizId => Object.keys(sessions).filter(s => sessions[s].quizId === quizId && sessions[s].active).length > 0;
 
-const getActiveSessionFromQuizIdThrow = quizId => {
+export const getActiveSessionFromQuizIdThrow = quizId => {
   if (!quizHasActiveSession(quizId)) {
     throw new InputError('Quiz has no active session');
   }
@@ -256,7 +260,7 @@ const getActiveSessionFromQuizIdThrow = quizId => {
   return null;
 };
 
-const getActiveSessionIdFromQuizId = quizId => {
+export const getActiveSessionIdFromQuizId = quizId => {
   const activeSessions = Object.keys(sessions).filter(s => sessions[s].quizId === quizId && sessions[s].active);
   if (activeSessions.length === 1) {
     return parseInt(activeSessions[0], 10);

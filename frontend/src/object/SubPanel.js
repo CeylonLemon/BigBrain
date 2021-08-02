@@ -1,63 +1,52 @@
-// import { BasicTextFields, MultilineTextFields, SmallTextFields } from './TextFiled';
-import React from 'react';
-// import { SecondaryButtons, TextButtons } from './Button';
-
-// function SubPanel2 () {
-//   return <div>
-//       <form autoComplete="off">
-//           <BasicTextFields label='TITLE'/>
-//           <div style={{ display: 'flex' }}>
-//               <SmallTextFields label='DURATION'/>
-//               <SmallTextFields label='POINTS'/>
-//           </div>
-//
-//           <MultilineTextFields/>
-//           {/* <BasicTextFields label='TITLE'/> */}
-//           {/* <BasicTextFields label='TITLE'/> */}
-//       </form>
-//
-//         <div style={{ display: 'flex' }} >
-//             <TextButtons label={'ADD OPTIONS'}/>
-//             <SecondaryButtons label={'DELETE'}/>
-//         </div>
-//
-//     </div>
-// }
+import React, { forwardRef, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-// import { ACTIONS } from '../helper/UserContext'
-// import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
-// import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-// import CardContent from '@material-ui/core/CardContent';
-// import CardActions from '@material-ui/core/CardActions';
-// import Collapse from '@material-ui/core/Collapse';
-// import Avatar from '@material-ui/core/Avatar';
-// import IconButton from '@material-ui/core/IconButton';
-// import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
-// import FavoriteIcon from '@material-ui/icons/Favorite';
-// import ShareIcon from '@material-ui/icons/Share';
-// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-// import MoreVertIcon from '@material-ui/icons/MoreVert';
-import PaginationLink from './Pagination';
-// import { CardHeader } from '@material-ui/core';
-import { BlankPic } from '../helper/helper';
-// import { getValueById } from './helpers';
 import { BasicTextFields, MultilineTextFields, SmallTextFields } from './TextFiled';
-import { PrimaryButtons, SecondaryButtons } from './Button';
+import { Add } from './icons'
 import PropTypes from 'prop-types';
-// import { Question } from './game';
-// import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckboxLabels from './CheckBoxs';
-import { FormControl } from '@material-ui/core';
-// import Typography from '@material-ui/core/Typography';
-// import SubPanelWrapper from './subPanelWrapper';
-// import Button from '@material-ui/core/Button';
+import Options from './Options';
+// import { FormControl } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
+import { Paper } from '@material-ui/core';
+import Draggable from 'react-draggable';
+// import Paper from '@material-ui/core/Paper';
+// function PaperComponent (props) {
+//   return (
+//         <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
+//             <Paper {...props} />
+//         </Draggable>
+//   );
+// }
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '50vh'
+    width: '50vh',
+    position: 'absolute',
+    top: '8.5vh',
+    left: '47%',
+    height: '77vh'
+  },
+  subPanel: {
+    width: '50vh',
+    position: 'absolute',
+    top: '8.5vh',
+    left: '47%',
+    height: '77vh',
+    zIndex: '2'
+  },
+  smallSubPanel: {
+    width: '95%',
+    position: 'absolute',
+    top: '8.5vh',
+    left: '10%',
+    zIndex: '2'
+  },
+  editorHeader: {
+    display: 'flex',
+    justifyContent: 'flex-end'
+
   },
   media: {
     height: '30%',
@@ -81,127 +70,122 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     padding: '3px 10px 5px 10px',
+  },
+  contentSmall: {
+    margin: '3px 0 5px 15px',
+    width: '90%',
+    '& div': {
+      paddingLeft: '1px'
+    }
+  },
+  closeButton: {
+    color: theme.palette.grey[500],
+    cursor: 'pointer'
   }
 }));
 
-function SubPanel ({ game, dispatch, dispatchStates, QIndex }) {
+const SubPanel = forwardRef((props, refValue) => {
+  const { id, question, handleClose, mediaSize } = props
+  console.log(handleClose)
   const classes = useStyles();
-  // const [index, setIndex] = useState(0)
-  // const [expanded, setExpanded] = React.useState(false);
+  const uniqId = id
+  const controlRef = useRef()
 
-  // const handleExpandClick = () => {
-  //   setExpanded(!expanded);
-  // };
-  console.log('subPanel render!')
-  const uniqId = game.id + QIndex
-  // const addQuestion = () => {
-  //   const newQuestion = new Question()
-  //   dispatch({
-  //     type: ACTIONS.MODIFY_QUESTION,
-  //     payload: {
-  //       gid: game.id,
-  //       index: QIndex,
-  //       question: newQuestion
-  //     }
-  //   })
-  //   return newQuestion
-  // }
+  console.log('subPanel render!' + id)
 
-  const modifyQuestion = () => {
-    // const newQuestion = {
-    //   title: getValueById(uniqId + 'title'),
-    //   duration: getValueById(uniqId + 'duration'),
-    //   options: getValueById(uniqId + 'options'),
-    //   answers: getValueById(uniqId + 'answers'),
-    //   points: getValueById(uniqId + 'points'),
-    //   thumbnail: BlankPic
-    // }
+  const addOption = () => {
+    console.log('triggrt handlesave')
+    controlRef.current.addOptionFromSubPanel()
   }
-  // const question = game.questions[QIndex] || addQuestion()
-  const question = game.questions[QIndex]
-  const { title, duration, points, options, answers, type } = question
-  // const { title, duration, points } = { title: 'title', duration: 5, points: 5 }
+  const { title, duration, points, options, answers } = question
 
+  useEffect(() => {
+    console.log(refValue.current)
+    refValue.current.style.display = id === 0 ? '' : 'none'
+  }, [])
   return (
-        <Card className={classes.root}>
-            <CardMedia
-                className={classes.media}
-                image={BlankPic}
-                title="Paella dish"
-            />
+      <div ref={refValue}>
+      <Draggable className={mediaSize === 'small' ? classes.smallSubPanel : classes.subPanel}>
+            <Card >
+                <div className={classes.editorHeader}>
+                    <IconButton aria-label="close" className={classes.closeButton} onTouchStart={handleClose}
+                                onClick={handleClose}>
+                        <CloseIcon style={{ cursor: 'pointer' }}/>
+                    </IconButton>
+                </div>
+                <div className={mediaSize === 'small' ? classes.contentSmall : classes.content}>
+                    {/* <FormControl autoComplete="off" style={{ padding: '0 0 0 2vh' }}> */}
 
-            <div className={classes.content}>
+                    {/* <fieldset */}
+                    {/*    style={{ */}
+                    {/*      maxHeight: '30vh', */}
+                    {/*      width: '84%', */}
+                    {/*      margin: '0.2vh 0 0 0.7vh', */}
+                    {/*      border: '1px dashed grey', */}
+                    {/*      borderRadius: '10px' */}
+                    {/*    }}> */}
+                    {/*    <legend style={{ width: '8vh', paddingLeft: '0.7vh' }}><span>Basic</span></legend> */}
+                    <Paper>
+                        <form autoComplete='off'>
+                    <BasicTextFields
+                        label='TITLE'
+                        id={uniqId + 'title'}
+                        size='medium'
+                        value={title}
+                        // ref={inputRef}
+                        // onChange={handleChange}
+                    />
+                    <MultilineTextFields defaultValue='Single Selection' id={uniqId + 'multi'}/>
+                    <SmallTextFields label='POINTS' className='points' id={uniqId + 'points'} size='medium'
+                                     defaultValue={points}/>
+                    <SmallTextFields label='DURATION' id={uniqId + 'duration'} size='medium' defaultValue={duration}/>
+                        </form>
+                        </Paper>
+                    {/* </fieldset> */}
 
-                 <FormControl autoComplete="off" style={{ padding: '0 0 0 2vh' }} >
+                    {/* <fieldset style={{ */}
+                    {/*  overflow: 'scroll', */}
+                    {/*  maxHeight: '35vh', */}
+                    {/*  width: '84%', */}
+                    {/*  margin: '0.5vh 0 0 0.7vh', */}
+                    {/*  border: '1px dashed grey', */}
+                    {/*  borderRadius: '10px' */}
+                    {/* }}> */}
+                    {/*    <legend style={{ width: '8vh', paddingLeft: '0.7vh' }}> */}
+                    {/*        <span>Options</span> */}
+                    {/*    </legend> */}
+                    <Paper>
+                        <Options options={options} uniqId={uniqId} answers={answers} ref={controlRef}/>
 
-                    <fieldset
-                        style={{
-                          maxHeight: '22vh',
-                          width: '84%',
-                          margin: '0.2vh 0 0 0.7vh',
-                          border: '1px dashed grey',
-                          borderRadius: '10px'
-                        }}>
-                        <legend style={{ width: '8vh', paddingLeft: '0.7vh' }}><span>Basic</span></legend>
-                        <BasicTextFields label='TITLE' id={uniqId + 'title'} size='small' value={title}/>
-                        <MultilineTextFields defaultValue={type}/>
-                        <SmallTextFields label='POINTS' id={uniqId + 'points'} size='small' value={points}/>
-                        <SmallTextFields label='DURATION' id={uniqId + 'duration'} size='small' value={duration}/>
-                    </fieldset>
-
-                        <fieldset style={{
-                          overflow: 'scroll',
-                          maxHeight: '20.5vh',
-                          width: '84%',
-                          margin: '0.5vh 0 0 0.7vh',
-                          border: '1px dashed grey',
-                          borderRadius: '10px'
-                        }}>
-                            <legend style={{ width: '8vh', paddingLeft: '0.7vh' }}><span>Options</span></legend>
-
-                             <CheckboxLabels options={options} uniqId={uniqId} answers={answers}/>
-                            {/* <BasicTextFields label='POINTS' id='GameTitle' size='small'/> */}
-                            {/* <BasicTextFields label='DURATION' id='GameTitle' size='small'/> */}
-                            {/* <BasicTextFields label='DURATION' id='GameTitle' size='small'/> */}
-                            {/* <BasicTextFields label='DURATION' id='GameTitle' size='small'/> */}
-                        </fieldset>
-
+                    {/* </fieldset> */}
+                </Paper>
                     <div style={{ display: 'flex' }}>
-                        <div>
-                            <SecondaryButtons label={'DELETE'}/>
-                        </div>
-                        <div>
-                            <PrimaryButtons label={'IMAGE'}/>
-                        </div>
-                        <div>
-                            <PrimaryButtons label={'SAVE'} onClick={modifyQuestion}/>
-                        </div>
-                        <div>
-                            <PrimaryButtons label={'AddQUESTION'}/>
-                        </div>
-
+                        <Add
+                            handleClick={addOption}
+                            style={{ height: '4vh', width: '4vh', margin: '1vh' }}
+                        />
                     </div>
+                    {/* </FormControl> */}
+                </div>
 
-                    {/* <Button size="small" color="primary" type={'submit'}> */}
-                    {/*    Submit */}
-                    {/* </Button> */}
-
-                 </FormControl>
-            </div>
-
-            {/* <Collapse in={expanded} timeout="auto" unmountOnExit> */}
-            {/*    <CardContent> */}
-
-            {/*    </CardContent> */}
-            {/* </Collapse> */}
-            <PaginationLink/>
-        </Card>
+            </Card>
+      </Draggable>
+      </div>
   );
 }
+)
 SubPanel.propTypes = {
+  props: PropTypes.object,
+  mediaSize: PropTypes.string,
   game: PropTypes.object,
   dispatchStates: PropTypes.func,
-  QIndex: PropTypes.number,
-  dispatch: PropTypes.func
+  handleClose: PropTypes.func,
+  index: PropTypes.number,
+  dispatch: PropTypes.func,
+  question: PropTypes.object,
+  id: PropTypes.any,
+  open: PropTypes.bool,
+  refValue: PropTypes.object
 }
+SubPanel.displayName = 'SubPanel'
 export default React.memo(SubPanel)

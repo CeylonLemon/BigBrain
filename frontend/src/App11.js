@@ -1,13 +1,13 @@
 import React from 'react';
 import { Home } from './pages/home'
-import { StartGame } from './pages/startGame';
+import { StartGame } from './pages/Game/startGame';
 import { JoinGame } from './playerPages/joinGame';
 import Gaming from './playerPages/gaming';
 import { AlertProvider, GamesProvider, MediaProvider } from './helper/UserContext';
-import { WaitForPlayers } from './pages/waitForPlayers';
+import { WaitForPlayers } from './pages/Game/waitForPlayers';
 import { WaitingRoom } from './playerPages/waitingRoom';
 import { GameEnd } from './playerPages/gameEnd.jsx';
-import EndOfGame from './pages/EndOfGame';
+import EndOfGame from './pages/Game/EndOfGame';
 import SignIn from './pages/Auth/SignIn';
 import SignUp from './pages/Auth/SignUp';
 import ButtonAppBar from './components/GlobalComponents/NavBar';

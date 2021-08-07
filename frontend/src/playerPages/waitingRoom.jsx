@@ -3,7 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { getCurrentQuestion, ADDRESS } from '../helper/api';
 import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
-import { Copy } from '../object/icons';
+import { Copy } from '../components/Buttons/icons';
 import { copyLink } from '../helper/helper';
 import { AlertContext, ACTIONS } from '../helper/UserContext';
 

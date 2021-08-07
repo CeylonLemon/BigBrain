@@ -2,14 +2,14 @@ import React, { forwardRef, useContext, useImperativeHandle, useState } from 're
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
-import { FileInput } from './Button';
+import { FileInput } from '../Buttons/Button';
 import { CardActions, TextareaAutosize } from '@material-ui/core';
-import { AddQuestion, EditIcon, SubmitIcon } from './icons';
-import { fileToDataUrl } from '../helper/helper';
+import { AddQuestion, EditIcon, SubmitIcon } from '../Buttons/icons';
+import { fileToDataUrl } from '../../helper/helper';
 import PropTypes from 'prop-types';
-import PaginationLink from './Pagination';
+import PaginationLink from '../Buttons/Pagination';
 import Typography from '@material-ui/core/Typography';
-import { MediaContext } from '../helper/UserContext';
+import { MediaContext } from '../../helper/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {

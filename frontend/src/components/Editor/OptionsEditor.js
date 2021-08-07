@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
-import { DeleteOption } from './icons';
+import { DeleteOption } from '../Buttons/icons';
 import { Paper, TextareaAutosize } from '@material-ui/core';
 import CheckBox from '@material-ui/core/Checkbox';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';

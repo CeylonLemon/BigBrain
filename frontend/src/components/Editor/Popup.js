@@ -8,13 +8,13 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { ACTIONS, UserContext } from '../helper/UserContext';
+import { ACTIONS, UserContext } from '../../helper/UserContext';
 import { useHistory, useLocation } from 'react-router-dom';
-import CircularIntegration from './CircularIntegration';
-import { updateQuiz } from '../helper/api';
+import CircularIntegration from '../Buttons/CircularIntegration';
+import { updateQuiz } from '../../helper/api';
 import QuestionEditor from './QuestionEditor';
 import GameEditor from './GameEditor';
-import { Question } from './game';
+import { Question } from '../../helper/game';
 
 const styles = (theme) => ({
 

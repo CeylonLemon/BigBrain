@@ -21,7 +21,7 @@ context('Querying', () => {
 
     cy.get('[data-test-id="test-example"]').should('have.class', 'example')
 
-    // 'cy.get()' yields jQuery object, you can get its attribute
+    // 'cy.get()' yields jQuery components, you can get its attribute
     // by invoking `.attr()` method
     cy.get('[data-test-id="test-example"]')
       .invoke('attr', 'data-test-id')

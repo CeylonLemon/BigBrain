@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from 'react'
 import { useLocation, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import QuizBoard from '../object/QuizBoard';
-import { connectToServer } from '../object/helpers';
+import QuizBoard from '../components/Game/QuizBoard';
+import { connectToServer } from '../helper/helper';
 
 const useStyles = makeStyles((theme) => ({
   root: {

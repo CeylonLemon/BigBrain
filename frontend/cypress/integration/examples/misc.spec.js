@@ -95,7 +95,7 @@ context('Misc', () => {
     })
   })
 
-  it('cy.wrap() - wrap an object', () => {
+  it('cy.wrap() - wrap an components', () => {
     // https://on.cypress.io/wrap
     cy.wrap({ foo: 'bar' })
       .should('have.property', 'foo')

@@ -13,7 +13,7 @@ context('Network Requests', () => {
       .should((response) => {
         expect(response.status).to.eq(200)
         // the server sometimes gets an extra comment posted from another machine
-        // which gets returned as 1 extra object
+        // which gets returned as 1 extra components
         expect(response.body).to.have.property('length').and.be.oneOf([500, 501])
         expect(response).to.have.property('headers')
         expect(response).to.have.property('duration')
@@ -22,12 +22,12 @@ context('Network Requests', () => {
 
   it('cy.request() - verify response using BDD syntax', () => {
     cy.request('https://jsonplaceholder.cypress.io/comments')
-    .then((response) => {
+      .then((response) => {
       // https://on.cypress.io/assertions
-      expect(response).property('status').to.equal(200)
-      expect(response).property('body').to.have.property('length').and.be.oneOf([500, 501])
-      expect(response).to.include.keys('headers', 'duration')
-    })
+        expect(response).property('status').to.equal(200)
+        expect(response).property('body').to.have.property('length').and.be.oneOf([500, 501])
+        expect(response).to.include.keys('headers', 'duration')
+      })
   })
 
   it('cy.request() with query parameters', () => {
@@ -40,20 +40,20 @@ context('Network Requests', () => {
         id: 3,
       },
     })
-    .its('body')
-    .should('be.an', 'array')
-    .and('have.length', 1)
-    .its('0') // yields first element of the array
-    .should('contain', {
-      postId: 1,
-      id: 3,
-    })
+      .its('body')
+      .should('be.an', 'array')
+      .and('have.length', 1)
+      .its('0') // yields first element of the array
+      .should('contain', {
+        postId: 1,
+        id: 3,
+      })
   })
 
   it('cy.request() - pass result to the second request', () => {
     // first, let's find out the userId of the first user we have
     cy.request('https://jsonplaceholder.cypress.io/users?_limit=1')
-      .its('body') // yields the response object
+      .its('body') // yields the response components
       .its('0') // yields the first element of the returned list
       // the above two commands its('body').its('0')
       // can be written as its('body.0')
@@ -68,7 +68,7 @@ context('Network Requests', () => {
         })
       })
       // note that the value here is the returned value of the 2nd request
-      // which is the new post object
+      // which is the new post components
       .then((response) => {
         expect(response).property('status').to.equal(201) // new entity created
         expect(response).property('body').to.contain({
@@ -90,20 +90,20 @@ context('Network Requests', () => {
     // https://on.cypress.io/variables-and-aliases
     cy.request('https://jsonplaceholder.cypress.io/users?_limit=1')
       .its('body').its('0') // yields the first element of the returned list
-      .as('user') // saves the object in the test context
+      .as('user') // saves the components in the test context
       .then(function () {
         // NOTE 👀
         //  By the time this callback runs the "as('user')" command
-        //  has saved the user object in the test context.
+        //  has saved the user components in the test context.
         //  To access the test context we need to use
         //  the "function () { ... }" callback form,
-        //  otherwise "this" points at a wrong or undefined object!
+        //  otherwise "this" points at a wrong or undefined components!
         cy.request('POST', 'https://jsonplaceholder.cypress.io/posts', {
           userId: this.user.id,
           title: 'Cypress Test Runner',
           body: 'Fast, easy and reliable testing for anything that runs in a browser.',
         })
-        .its('body').as('post') // save the new post from the response
+          .its('body').as('post') // save the new post from the response
       })
       .then(function () {
         // When this callback runs, both "cy.request" API commands have finished
@@ -116,7 +116,7 @@ context('Network Requests', () => {
   it('cy.intercept() - route responses to matching requests', () => {
     // https://on.cypress.io/intercept
 
-    let message = 'whoa, this comment does not exist'
+    const message = 'whoa, this comment does not exist'
 
     // Listen to GET to comments/1
     cy.intercept('GET', '**/comments/*').as('getComment')

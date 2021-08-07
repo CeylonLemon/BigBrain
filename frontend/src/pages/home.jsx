@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import { Container } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import TableWrapper from '../object/TableWrapper'
-import PopupWrapper from '../object/PopupWrapper';
+import TableWrapper from '../components/Table/TableWrapper'
+import PopupWrapper from '../components/Editor/PopupWrapper';
 
 export function Home () {
   const history = useHistory()

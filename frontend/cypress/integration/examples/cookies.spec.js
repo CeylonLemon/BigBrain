@@ -15,7 +15,7 @@ context('Cookies', () => {
     // https://on.cypress.io/getcookie
     cy.get('#getCookie .set-a-cookie').click()
 
-    // cy.getCookie() yields a cookie object
+    // cy.getCookie() yields a cookie components
     cy.getCookie('token').should('have.property', 'value', '123ABC')
   })
 
@@ -43,7 +43,7 @@ context('Cookies', () => {
 
     cy.setCookie('foo', 'bar')
 
-    // cy.getCookie() yields a cookie object
+    // cy.getCookie() yields a cookie components
     cy.getCookie('foo').should('have.property', 'value', 'bar')
   })
 

@@ -3,8 +3,8 @@ import { joinGame } from '../helper/api';
 import { useHistory, useParams } from 'react-router-dom'
 import { Box } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import { DenseTextFields } from '../object/TextFiled';
-import { StartButton } from '../object/Button';
+import { DenseTextFields } from '../components/Editor/TextFiled';
+import { StartButton } from '../components/Buttons/Button';
 
 export function JoinGame () {
   const history = useHistory();

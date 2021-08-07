@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState, useReducer } from 'react'
 import { getAllQuizzes, getQuiz, updateQuiz } from './api';
-import { Game } from '../object/game';
+import { Game } from './game';
 import { useMediaQuery } from 'react-responsive/src';
 
 export const UserContext = React.createContext(null);

@@ -1,5 +1,5 @@
-import { BlankPic } from '../helper/UserContext';
-import { uuid } from './helpers';
+import { BlankPic } from './UserContext';
+import { uuid } from './helper';
 export class Game {
   constructor () {
     this.name = 'A new quiz'

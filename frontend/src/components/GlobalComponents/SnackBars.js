@@ -3,7 +3,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import { ACTIONS, AlertContext } from '../helper/UserContext';
+import { ACTIONS, AlertContext } from '../../helper/UserContext';
 
 function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;

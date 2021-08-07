@@ -6,14 +6,14 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import { StopButton, StartButton } from './Button'
+import { StopButton, StartButton } from '../Buttons/Button'
 import PropTypes from 'prop-types';
 import OptionsGrid from './OptionsGrid';
 import Timer from './Timer'
-import { getCurrentQuestion, getAnswers, endGame, advanceGame } from '../helper/api';
-import { UserContext } from '../helper/UserContext';
-import { findGameById } from './helpers';
-import { NotAnswered, Correct, InCorrect } from './icons';
+import { getCurrentQuestion, getAnswers, endGame, advanceGame } from '../../helper/api';
+import { UserContext } from '../../helper/UserContext';
+import { findGameById } from '../../helper/helper';
+import { NotAnswered, Correct, InCorrect } from '../Buttons/icons';
 import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom'
 const useStyles = makeStyles((theme) => ({

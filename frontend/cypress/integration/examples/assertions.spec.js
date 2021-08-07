@@ -73,7 +73,7 @@ context('Assertions', () => {
           // @ts-ignore TS6133 unused variable
           const texts = $p.map((i, el) => Cypress.$(el).text())
 
-          // jquery map returns jquery object
+          // jquery map returns jquery components
           // and .get() convert this to simple array
           const paragraphs = texts.get()
 
@@ -156,13 +156,13 @@ context('Assertions', () => {
         })
     })
 
-    it('assert - assert shape of an object', () => {
+    it('assert - assert shape of an components', () => {
       const person = {
         name: 'Joe',
         age: 20,
       }
 
-      assert.isObject(person, 'value is object')
+      assert.isObject(person, 'value is components')
     })
 
     it('retries the should callback until assertions pass', () => {

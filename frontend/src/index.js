@@ -5,7 +5,7 @@ import 'regenerator-runtime/runtime'
 // import './index.css';
 import App11 from './App11';
 // eslint-disable-next-line import/no-webpack-loader-syntax
-require('file-loader?name=[name].[ext]!./index.html')
+require('file-loader?name=[name].[ext]!./index1.html')
 
 ReactDOM.render(
   <React.StrictMode>

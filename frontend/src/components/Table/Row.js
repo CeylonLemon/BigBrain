@@ -1,14 +1,14 @@
-import { Delete, Edit, Play } from './icons';
+import { Delete, Edit, Play } from '../Buttons/icons';
 import React, { useState, Fragment } from 'react';
-import CircularIndeterminate from './Circle';
+import CircularIndeterminate from '../Circle';
 import PropTypes from 'prop-types';
 import { turn } from './Table';
-import { deleteQuiz, endGame, getQuiz, startGame } from '../helper/api';
-import { ACTIONS } from '../helper/UserContext';
+import { deleteQuiz, endGame, getQuiz, startGame } from '../../helper/api';
+import { ACTIONS } from '../../helper/UserContext';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import ButtonMenu from './BottonMenu';
+import ButtonMenu from '../Buttons/BottonMenu';
 const token = sessionStorage.getItem('token')
 const useStyles = makeStyles((theme) => ({
   row: {

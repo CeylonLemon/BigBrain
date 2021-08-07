@@ -8,16 +8,16 @@ import { WaitForPlayers } from './pages/waitForPlayers';
 import { WaitingRoom } from './playerPages/waitingRoom';
 import { GameEnd } from './playerPages/gameEnd.jsx';
 import EndOfGame from './pages/EndOfGame';
-import SignIn from './pages/SignIn';
-import SignUp from './pages/SignUp';
-import ButtonAppBar from './object/NavBar';
+import SignIn from './pages/Auth/SignIn';
+import SignUp from './pages/Auth/SignUp';
+import ButtonAppBar from './components/GlobalComponents/NavBar';
 import { CacheRoute, CacheSwitch } from 'react-router-cache-route'
 import {
   BrowserRouter as Router,
   Route,
   Redirect
 } from 'react-router-dom';
-import Snackbars from './object/SnackBars';
+import Snackbars from './components/GlobalComponents/SnackBars';
 function App11 () {
   return (
       <MediaProvider>

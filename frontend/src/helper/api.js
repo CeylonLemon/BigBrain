@@ -4,10 +4,10 @@
  * @param {*} path The url to make the reques to.
  * @param {*} options Additiona options to pass to fetch.
  */
-// export const ADDRESS = 'http://localhost:5005'
-// export const PRODUCTION_ADDRESS = 'http://localhost:3000'
-export const ADDRESS = 'http://47.102.108.110'
-export const PRODUCTION_ADDRESS = 'http://47.102.108.110'
+export const ADDRESS = 'http://localhost:5005'
+export const PRODUCTION_ADDRESS = 'http://localhost:3000'
+// export const ADDRESS = 'http://47.102.108.110'
+// export const PRODUCTION_ADDRESS = 'http://47.102.108.110'
 const getToken = () => {
   console.log('this is token', sessionStorage.getItem('token'))
   return sessionStorage.getItem('token')

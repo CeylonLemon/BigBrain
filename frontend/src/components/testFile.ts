@@ -1,5 +1,5 @@
 import React from 'react'
-import {Question} from "./game";
+import {Question} from "../helper/game";
 
 interface User{
     name:string,

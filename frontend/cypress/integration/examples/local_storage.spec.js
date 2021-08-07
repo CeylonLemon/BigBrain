@@ -16,7 +16,7 @@ context('Local Storage', () => {
       expect(localStorage.getItem('prop3')).to.eq('magenta')
     })
 
-    // clearLocalStorage() yields the localStorage object
+    // clearLocalStorage() yields the localStorage components
     cy.clearLocalStorage().should((ls) => {
       expect(ls.getItem('prop1')).to.be.null
       expect(ls.getItem('prop2')).to.be.null

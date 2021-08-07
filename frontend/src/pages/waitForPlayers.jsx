@@ -3,9 +3,9 @@ import { useHistory } from 'react-router-dom';
 import { endGame, advanceGame, ADDRESS } from '../helper/api';
 import { makeStyles } from '@material-ui/core/styles';
 import { Divider } from '@material-ui/core';
-import { Copy } from '../object/icons'
+import { Copy } from '../components/Buttons/icons'
 import { ACTIONS, MediaContext, AlertContext } from '../helper/UserContext';
-import { StartButton, StopButton } from '../object/Button';
+import { StartButton, StopButton } from '../components/Buttons/Button';
 import { copyLink } from '../helper/helper';
 
 export function WaitForPlayers () {

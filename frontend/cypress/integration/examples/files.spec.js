@@ -12,7 +12,7 @@ context('Files', () => {
 
   beforeEach(() => {
     // load example.json fixture file and store
-    // in the test context object
+    // in the test context components
     cy.fixture('example.json').as('example')
   })
 
@@ -23,7 +23,7 @@ context('Files', () => {
     // use a fixture file's content.
 
     // when application makes an Ajax request matching "GET **/comments/*"
-    // Cypress will intercept it and reply with the object in `example.json` fixture
+    // Cypress will intercept it and reply with the components in `example.json` fixture
     cy.intercept('GET', '**/comments/*', { fixture: 'example.json' }).as('getComment')
 
     // we have code that gets a comment when
@@ -37,7 +37,7 @@ context('Files', () => {
 
   it('cy.fixture() or require - load a fixture', function () {
     // we are inside the "function () { ... }"
-    // callback and can use test context object "this"
+    // callback and can use test context components "this"
     // "this.example" was loaded in "beforeEach" function callback
     expect(this.example, 'fixture in the test context')
       .to.deep.equal(requiredExample)

@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { purple } from '@material-ui/core/colors';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import { turn } from './Table'
+import { turn } from '../Table/Table'
 
 const PurpleSwitch = withStyles({
   switchBase: {

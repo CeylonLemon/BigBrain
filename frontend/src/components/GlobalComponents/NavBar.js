@@ -10,7 +10,7 @@ import { Link, useHistory } from 'react-router-dom'
 import { Sugar } from './NavBar.element'
 import { MenuItem } from '@material-ui/core'
 import styled from 'styled-components';
-import { UserContext } from '../helper/UserContext';
+import { UserContext } from '../../helper/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {

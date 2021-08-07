@@ -66,12 +66,9 @@ export default function Timer (props) {
     progress: 0,
     timeLeft: timeLeft
   });
-  console.log('timer update', timeLeft)
 
   React.useEffect(() => {
-    console.log('effect', progress.progress)
     if (progress.progress > 0) {
-      console.log('no time')
       setProgress({
         progress: 0,
         timeLeft: timeLeft
@@ -92,7 +89,6 @@ export default function Timer (props) {
 
   React.useEffect(() => {
     if (handleArrival && progress.progress === 100) {
-      console.log('on time')
       handleArrival()
     }
   }, [progress])

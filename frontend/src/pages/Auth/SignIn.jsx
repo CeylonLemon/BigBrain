@@ -1,8 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
@@ -13,8 +12,10 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory, Redirect } from 'react-router-dom';
-import { signInRequest } from '../helper/api';
-import { UserContext } from '../helper/UserContext';
+import { signInRequest } from '../../helper/api';
+import { UserContext } from '../../helper/UserContext';
+import { useForm, Controller } from 'react-hook-form'
+import AuthInput from './AuthInput';
 
 function Copyright () {
   return (
@@ -50,27 +51,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn () {
-  const [email, editEmail] = useState('')
-  const [password, editPassword] = useState('')
   const { setHaveToken } = useContext(UserContext)
   const classes = useStyles();
-  // const query = useLocation().search
+  const { control, handleSubmit, watch } = useForm()
   const history = useHistory();
+  console.log('render')
+
   function signIn (e) {
-    e.preventDefault()
+    const email = watch('email')
+    const password = watch('password')
     signInRequest(email, password)
       .then(data => {
-        console.log(data.token)
         sessionStorage.setItem('token', data.token)
         sessionStorage.setItem('email', email)
         setHaveToken(true)
         history.push('/home');
       })
       .catch(e => { alert(e) })
-
     return false
   }
-
   return (sessionStorage.getItem('token')
     ? <Redirect to={'/home'}/>
     : <Container component="main" maxWidth="xs">
@@ -82,37 +81,33 @@ export default function SignIn () {
                     <Typography component="h1" variant="h5">
                         登录
                     </Typography>
-                    <form className={classes.form} noValidate onSubmit={signIn} >
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            value={email}
-                            id="email"
-                            label="邮箱地址"
+                    <form className={classes.form} noValidate onSubmit={handleSubmit(signIn)} autoComplete='off'>
+                        <Controller
                             name="email"
-                            autoComplete="email"
-                            autoFocus
-                            onChange={(e) => {
-                              editEmail(e.target.value);
-                            }}
+                            control={control}
+                            render={({
+                              field,
+                              fieldState: { invalid, isTouched, isDirty, error },
+                            }) => (
+                              error && error.type === 'required'
+                                ? <AuthInput label='邮箱地址' errorText={'邮箱不能为空'} field={field}/>
+                                : <AuthInput label='邮箱地址' field={field}/>
+                            )}
+                            rules={{ required: true }}
                         />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            value={password}
-                            required
-                            fullWidth
+
+                        <Controller
+                            render={({
+                              field,
+                              fieldState: { invalid, isTouched, isDirty, error },
+                            }) => (
+                              error && error.type === 'required'
+                                ? <AuthInput label='密码' errorText={'密码不能为空'} field={field}/>
+                                : <AuthInput label='密码' field={field}/>
+                            )}
                             name="password"
-                            label="密码"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            autoFocus
-                            onChange={(e) => {
-                              editPassword(e.target.value);
-                            }}
+                            control={control}
+                            rules={{ required: true }}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
@@ -125,7 +120,6 @@ export default function SignIn () {
                             color="primary"
                             className={classes.submit}
                             name='SignIn'
-                            // onClick={() => { signIn() }}
                         >
                             登录
                         </Button>

@@ -1,13 +1,13 @@
 import React, { useContext, Fragment } from 'react';
 import Divider from '@material-ui/core/Divider';
-import CustomizedSwitches from './Switch';
-import { TableButton } from './Button';
+import CustomizedSwitches from '../Buttons/Switch';
+import { TableButton } from '../Buttons/Button';
 import Row from './Row.js'
 import PropTypes from 'prop-types';
-import { UserContext, ACTIONS } from '../helper/UserContext';
+import { UserContext, ACTIONS } from '../../helper/UserContext';
 import { makeStyles } from '@material-ui/core/styles';
-import { addNewQuiz, updateQuiz } from '../helper/api';
-import { Game } from './game';
+import { addNewQuiz, updateQuiz } from '../../helper/api';
+import { Game } from '../../helper/game';
 import MediaQuery from 'react-responsive';
 
 export const turn = {
